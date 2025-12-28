@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="Sample Track Generator"
+     xmlns="http://www.topografix.com/GPX/1/1"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+  <metadata>
+    <name>Sample Track - London Walk</name>
+    <desc>A sample GPS track around central London for testing</desc>
+    <author>
+      <name>Test Generator</name>
+    </author>
+    <time>2025-12-28T10:00:00Z</time>
+  </metadata>
+  <trk>
+    <name>London Central Walk</name>
+    <type>walk</type>
+    <trkseg>
+      <trkpt lat="51.5074" lon="-0.1278">
+        <ele>11.0</ele>
+        <time>2025-12-28T10:00:00Z</time>
+      </trkpt>
+      <trkpt lat="51.5076" lon="-0.1275">
+        <ele>11.5</ele>
+        <time>2025-12-28T10:01:00Z</time>
+      </trkpt>
+      <trkpt lat="51.5079" lon="-0.1270">
+        <ele>12.0</ele>
+        <time>2025-12-28T10:02:00Z</time>
+      </trkpt>
+      <trkpt lat="51.5083" lon="-0.1265">
+        <ele>12.5</ele>
+        <time>2025-12-28T10:03:00Z</time>
+      </trkpt>
+      <trkpt lat="51.5087" lon="-0.1260">
+        <ele>13.0</ele>
+        <time>2025-12-28T10:04:00Z</time>
+      </trkpt>
+      <trkpt lat="51.5090" lon="-0.1255">
+        <ele>13.5</ele>
+        <time>2025-12-28T10:05:00Z</time>
+      </trkpt>
+      <trkpt lat="51.5092" lon="-0.1250">
+        <ele>14.0</ele>
+        <time>2025-12-28T10:06:00Z</time>
+      </trkpt>
+      <trkpt lat="51.5095" lon="-0.1245">
+        <ele>14.5</ele>
+        <time>2025-12-28T10:07:00Z</time>
+      </trkpt>
+      <trkpt lat="51.5097" lon="-0.1240">
+        <ele>15.0</ele>
+        <time>2025-12-28T10:08:00Z</time>
+      </trkpt>
+      <trkpt lat="51.5099" lon="-0.1235">
+        <ele>15.5</ele>
+        <time>2025-12-28T10:09:00Z</time>
+      </trkpt>
+      <trkpt lat="51.5100" lon="-0.1230">
+        <ele>16.0</ele>
+        <time>2025-12-28T10:10:00Z</time>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>

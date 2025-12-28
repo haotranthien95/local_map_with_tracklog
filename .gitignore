@@ -41,3 +41,11 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Environment and secrets
+.env
+.env.*
+*.env
+
+# Tile cache (application data, don't commit cached tiles)
+tile_cache/
