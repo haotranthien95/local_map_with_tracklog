@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs access to your location to show your position on the map.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false />
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>App want to get permission for Photo Library</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
