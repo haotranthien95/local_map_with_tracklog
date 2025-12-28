@@ -1,0 +1,31 @@
+openapi: 3.0.0
+info:
+  title: Show Current Location Contract
+  version: 1.0.0
+paths:
+  /location:
+    get:
+      summary: Get current, last known, or default location
+      responses:
+        '200':
+          description: Location data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  latitude:
+                    type: number
+                  longitude:
+                    type: number
+                  locationType:
+                    type: string
+                    enum: [current, lastKnown, default]
+                  markerColor:
+                    type: string
+                    enum: [blue, red]
+                  bannerMessage:
+                    type: string
+                    example: "Your location"
+        '403':
+          description: Permission denied, default location returned
