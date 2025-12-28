@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>London Walk - KML</name>
+    <description>Sample KML track for testing</description>
+    <Placemark>
+      <name>Walking Route</name>
+      <description>A sample walking route in London</description>
+      <LineString>
+        <coordinates>
+          -0.1278,51.5074,11.0
+          -0.1275,51.5076,11.5
+          -0.1270,51.5079,12.0
+          -0.1265,51.5083,12.5
+          -0.1260,51.5087,13.0
+          -0.1255,51.5090,13.5
+          -0.1250,51.5092,14.0
+          -0.1245,51.5095,14.5
+          -0.1240,51.5097,15.0
+          -0.1235,51.5099,15.5
+          -0.1230,51.5100,16.0
+        </coordinates>
+      </LineString>
+    </Placemark>
+  </Document>
+</kml>

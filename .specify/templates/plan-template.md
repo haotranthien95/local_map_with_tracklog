@@ -31,7 +31,15 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Verify alignment with constitution principles:
+
+- **MVP-First Development**: Does this feature deliver working end-to-end functionality in first iteration?
+- **Minimal Viable Features**: Is scope reduced to absolute minimum that solves the user problem?
+- **Independent User Stories**: Can each user story be implemented, tested, and deployed independently?
+- **Progressive Enhancement**: Does plan start with core functionality using standard platform capabilities?
+- **Maintainability**: Is complexity justified? Are simple solutions preferred over clever abstractions?
+
+**Complexity Justification**: [Required only if introducing patterns/dependencies beyond simple Flutter standards]
 
 ## Project Structure
 
