@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Abstract Topo Mountain T Logo">
+  <!-- Colors:
+       Background: #000000
+       Green: #1FAE66
+       White: #FFFFFF -->
+
+  <!-- Background -->
+  <rect width="512" height="512" fill="#000000"/>
+
+  <!-- Main abstract T (mountain ridge + trail) -->
+  <!-- Ridge -->
+  <path d="M140 184 H372"
+        stroke="#1FAE66"
+        stroke-width="36"
+        stroke-linecap="round"/>
+
+  <!-- Trail -->
+  <path d="M256 184 V360"
+        stroke="#1FAE66"
+        stroke-width="36"
+        stroke-linecap="round"/>
+
+  <!-- Mountain peak cut -->
+  <path d="M196 184
+           L256 128
+           L316 184 Z"
+        fill="#FFFFFF"/>
+
+  <!-- Topographic map lines (subtle, elegant) -->
+  <path d="M176 248 H336"
+        stroke="#FFFFFF"
+        stroke-width="6"
+        stroke-linecap="round"
+        opacity="0.6"/>
+
+  <path d="M196 280 H316"
+        stroke="#FFFFFF"
+        stroke-width="6"
+        stroke-linecap="round"
+        opacity="0.4"/>
+
+  <path d="M216 312 H296"
+        stroke="#FFFFFF"
+        stroke-width="6"
+        stroke-linecap="round"
+        opacity="0.25"/>
+
+</svg>
