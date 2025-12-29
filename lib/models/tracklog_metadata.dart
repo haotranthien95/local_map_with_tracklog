@@ -16,6 +16,7 @@ class TracklogMetadata {
   final double boundsSouth;
   final double boundsEast;
   final double boundsWest;
+  final String? userId; // T038: User ID for ownership tracking (null = guest)
 
   TracklogMetadata({
     required this.id,
@@ -30,6 +31,7 @@ class TracklogMetadata {
     required this.boundsSouth,
     required this.boundsEast,
     required this.boundsWest,
+    this.userId, // T038: Optional user ID for auth/guest tracking
   });
 
   /// Create metadata from Track
@@ -65,6 +67,7 @@ class TracklogMetadata {
       'boundsSouth': boundsSouth,
       'boundsEast': boundsEast,
       'boundsWest': boundsWest,
+      'userId': userId, // T038: Include userId in serialization
     };
   }
 
@@ -85,6 +88,8 @@ class TracklogMetadata {
       boundsSouth: json['boundsSouth'] as double,
       boundsEast: json['boundsEast'] as double,
       boundsWest: json['boundsWest'] as double,
+      userId: json['userId']
+          as String?, // T038: Deserialize userId (nullable for backward compatibility)
     );
   }
 
@@ -95,6 +100,39 @@ class TracklogMetadata {
       south: boundsSouth,
       east: boundsEast,
       west: boundsWest,
+    );
+  }
+
+  /// T038: Copy with updated fields (for migration)
+  TracklogMetadata copyWith({
+    String? id,
+    String? name,
+    Color? color,
+    bool? isVisible,
+    String? filePath,
+    DateTime? importedAt,
+    String? importedFrom,
+    TrackFormat? format,
+    double? boundsNorth,
+    double? boundsSouth,
+    double? boundsEast,
+    double? boundsWest,
+    String? userId,
+  }) {
+    return TracklogMetadata(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      color: color ?? this.color,
+      isVisible: isVisible ?? this.isVisible,
+      filePath: filePath ?? this.filePath,
+      importedAt: importedAt ?? this.importedAt,
+      importedFrom: importedFrom ?? this.importedFrom,
+      format: format ?? this.format,
+      boundsNorth: boundsNorth ?? this.boundsNorth,
+      boundsSouth: boundsSouth ?? this.boundsSouth,
+      boundsEast: boundsEast ?? this.boundsEast,
+      boundsWest: boundsWest ?? this.boundsWest,
+      userId: userId ?? this.userId,
     );
   }
 }
