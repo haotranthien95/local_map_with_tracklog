@@ -3,12 +3,16 @@ import 'package:latlong2/latlong.dart';
 import 'dart:async';
 import '../models/map_style.dart';
 import '../models/track.dart' as model;
+import '../models/tracklog_metadata.dart';
 import '../models/device_location.dart';
 import '../services/tile_cache_service.dart';
 import '../services/file_picker_service.dart';
 import '../services/track_parser_service.dart';
 import '../services/location_service.dart';
+import '../services/tracklog_storage_service.dart';
 import '../widgets/map_view.dart';
+import '../widgets/tracklog_dialogs.dart';
+import 'tracklog_list_screen.dart';
 
 /// Map screen with map display and storage warning
 class MapScreen extends StatefulWidget {
@@ -23,10 +27,12 @@ class _MapScreenState extends State<MapScreen> {
   final FilePickerService _filePickerService = FilePickerServiceImpl();
   final TrackParserService _trackParserService = TrackParserServiceImpl();
   final LocationService _locationService = LocationServiceImpl();
+  final TracklogStorageService _storageService = TracklogStorageServiceImpl();
   final GlobalKey<MapViewState> _mapViewKey = GlobalKey<MapViewState>();
 
   MapStyle _currentMapStyle = MapStyle.standard;
   final List<model.Track> _tracks = [];
+  List<TracklogMetadata> _tracklogMetadata = [];
   bool _hasCheckedStorageWarning = false;
   DeviceLocation? _currentLocation;
   StreamSubscription<DeviceLocation?>? _locationSubscription;
@@ -34,6 +40,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
+    _loadPersistedTracklogs();
     _checkStorageWarning();
     _initializeLocation();
   }
@@ -63,6 +70,38 @@ class _MapScreenState extends State<MapScreen> {
         }
       },
     );
+  }
+
+  /// Load tracklogs from persistent storage
+  Future<void> _loadPersistedTracklogs() async {
+    try {
+      // Load metadata
+      _tracklogMetadata = await _storageService.loadAllMetadata();
+
+      // Load visible tracks
+      for (final metadata in _tracklogMetadata.where((m) => m.isVisible)) {
+        try {
+          final track = await _storageService.loadTrack(metadata.id);
+          setState(() {
+            _tracks.add(track);
+          });
+        } catch (e) {
+          // Log individual track loading failure but continue with others
+          print('Error loading track ${metadata.name}: $e');
+        }
+      }
+    } catch (e) {
+      print('Error loading tracklogs: $e');
+      // Show user-friendly error message
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Could not load saved tracklogs'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -127,6 +166,11 @@ class _MapScreenState extends State<MapScreen> {
       appBar: AppBar(
         title: const Text('Local Map with Track Log'),
         actions: [
+          // Tracklog list button
+          IconButton(
+            icon: const Icon(Icons.list),
+            onPressed: _openTracklogList,
+          ),
           // Storage info button
           IconButton(
             icon: const Icon(Icons.storage),
@@ -223,6 +267,15 @@ class _MapScreenState extends State<MapScreen> {
         return; // User cancelled
       }
 
+      // Show name dialog before parsing
+      if (!mounted) return;
+      final name = await showNameDialog(context);
+
+      if (name == null) {
+        // User cancelled, don't import
+        return;
+      }
+
       // Show loading indicator
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -232,24 +285,41 @@ class _MapScreenState extends State<MapScreen> {
       // Parse the track file
       final track = await _trackParserService.parseTrackFile(file);
 
+      // Create new track with user-entered name and default blue color
+      final namedTrack = model.Track(
+        id: track.id,
+        name: name,
+        coordinates: track.coordinates,
+        importedFrom: track.importedFrom,
+        format: track.format,
+        importedAt: track.importedAt,
+        color: const Color(0xFF2196F3), // Default blue color
+        isVisible: true,
+        metadata: track.metadata,
+      );
+
+      // Save to persistent storage
+      await _storageService.saveTracklog(namedTrack);
+
       // Add track to list and update UI
       setState(() {
-        _tracks.add(track);
+        _tracks.add(namedTrack);
+        _tracklogMetadata.add(TracklogMetadata.fromTrack(namedTrack));
       });
 
       // Auto-zoom to track bounds
-      _mapViewKey.currentState?.fitBounds(track.bounds);
+      _mapViewKey.currentState?.fitBounds(namedTrack.bounds);
 
-      // Show success message
+      // Show success message with custom name
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Track "${track.name}" imported successfully'),
+          content: Text('Track "$name" imported successfully'),
           action: SnackBarAction(
             label: 'Undo',
             onPressed: () {
               setState(() {
-                _tracks.remove(track);
+                _tracks.remove(namedTrack);
               });
             },
           ),
@@ -264,6 +334,101 @@ class _MapScreenState extends State<MapScreen> {
           backgroundColor: Colors.red,
         ),
       );
+    }
+  }
+
+  /// Open tracklog list screen
+  Future<void> _openTracklogList() async {
+    final selectedId = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TracklogListScreen(
+          tracklogs: _tracklogMetadata,
+          onUpdateMetadata: (metadata) async {
+            try {
+              // Update storage
+              await _storageService.updateMetadata(metadata);
+
+              // Update local metadata list
+              setState(() {
+                final index = _tracklogMetadata.indexWhere((m) => m.id == metadata.id);
+                if (index != -1) {
+                  _tracklogMetadata[index] = metadata;
+                }
+              });
+
+              // Update track in memory if loaded
+              final trackIndex = _tracks.indexWhere((t) => t.id == metadata.id);
+              if (trackIndex != -1) {
+                final track = _tracks[trackIndex];
+                final updatedTrack = model.Track(
+                  id: track.id,
+                  name: metadata.name,
+                  color: metadata.color,
+                  isVisible: metadata.isVisible,
+                  coordinates: track.coordinates,
+                  importedFrom: track.importedFrom,
+                  format: track.format,
+                  importedAt: track.importedAt,
+                );
+
+                setState(() {
+                  _tracks[trackIndex] = updatedTrack;
+                });
+              }
+            } catch (e) {
+              // Show error message if update fails
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Failed to update tracklog: $e'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            }
+          },
+          onDeleteTracklog: (id) async {
+            try {
+              // Delete from storage
+              await _storageService.deleteTracklog(id);
+
+              // Remove from local lists
+              setState(() {
+                _tracklogMetadata.removeWhere((m) => m.id == id);
+                _tracks.removeWhere((t) => t.id == id);
+              });
+            } catch (e) {
+              // Show error message if deletion fails
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Failed to delete tracklog: $e'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            }
+          },
+        ),
+      ),
+    );
+
+    // User tapped a tracklog - center map on it
+    if (selectedId != null && mounted) {
+      model.Track? track;
+
+      if (_tracks.any((t) => t.id == selectedId)) {
+        track = _tracks.firstWhere((t) => t.id == selectedId);
+      } else {
+        // Load track if not in memory
+        track = await _storageService.loadTrack(selectedId);
+        setState(() {
+          _tracks.add(track!);
+        });
+      }
+
+      _mapViewKey.currentState?.fitBounds(track.bounds);
     }
   }
 

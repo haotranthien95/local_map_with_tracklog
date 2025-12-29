@@ -9,6 +9,8 @@ Auto-generated from all feature plans. Last updated: 2025-12-28
 - N/A (no persistent storage required for this feature) (001-show-current-location)
 - Dart 3.5.4+ with Flutter SDK 3.5.4+ + flutter_map (6.1.0) for map rendering, geolocator (10.1.0) for location services, latlong2 (0.9.0) for coordinate handling (002-navigation-location-ui)
 - Local file system via path_provider (for tile cache) - no changes needed for this feature (002-navigation-location-ui)
+- Dart 3.5.4+, Flutter 3.5.4+ + flutter_map 6.1.0, geolocator 10.1.0, file_picker 6.1.0, gpx 2.2.0, xml 6.5.0, archive 3.4.0 (001-tracklog-management)
+- shared_preferences for tracklog metadata persistence, file system for tracklog data (001-tracklog-management)
 
 - Dart 3.5.4+ / Flutter 3.5.4+ (SDK constraint from pubspec.yaml) (001-offline-map-tracks)
 
@@ -28,8 +30,8 @@ tests/
 Dart 3.5.4+ / Flutter 3.5.4+ (SDK constraint from pubspec.yaml): Follow standard conventions
 
 ## Recent Changes
+- 001-tracklog-management: Added Dart 3.5.4+, Flutter 3.5.4+ + flutter_map 6.1.0, geolocator 10.1.0, file_picker 6.1.0, gpx 2.2.0, xml 6.5.0, archive 3.4.0
 - 002-navigation-location-ui: Added Dart 3.5.4+ with Flutter SDK 3.5.4+ + flutter_map (6.1.0) for map rendering, geolocator (10.1.0) for location services, latlong2 (0.9.0) for coordinate handling
-- 001-show-current-location: Added Dart 3.5.4+, Flutter 3.5.4+ + flutter_map (or alternatives: google_maps_flutter, mapbox_gl), geolocator (for location permission and device location), permission_handler (if needed for fine-grained permission control)
 - 001-show-current-location: Added Dart 3.5.4+, Flutter 3.5.4+ + flutter_map (or alternatives: google_maps_flutter, mapbox_gl), geolocator (for location permission and device location), permission_handler (if needed for fine-grained permission control)
 
 

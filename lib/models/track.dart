@@ -112,6 +112,7 @@ class Track {
   final DateTime importedAt;
   final LatLngBounds bounds;
   final Color color;
+  final bool isVisible;
   final Map<String, dynamic> metadata;
 
   Track({
@@ -122,6 +123,7 @@ class Track {
     required this.format,
     required this.importedAt,
     required this.color,
+    this.isVisible = true,
     Map<String, dynamic>? metadata,
   })  : bounds = LatLngBounds.fromPoints(coordinates),
         metadata = metadata ?? {};

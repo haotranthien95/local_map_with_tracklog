@@ -28,7 +28,6 @@ abstract class TrackParserService {
 
 /// Implementation of TrackParserService with GPX support
 class TrackParserServiceImpl implements TrackParserService {
-  static int _trackIdCounter = 0;
   static final List<Color> _trackColors = [
     Colors.blue,
     Colors.red,
@@ -240,9 +239,10 @@ class TrackParserServiceImpl implements TrackParserService {
       // Simplify large tracks automatically (>5000 points)
       final finalTrackPoints =
           trackPoints.length > 5000 ? simplifyTrack(trackPoints, tolerance: 0.0001) : trackPoints;
+      final _trackIdCounter = DateTime.now().millisecondsSinceEpoch;
 
       // Generate unique ID and assign color
-      final trackId = 'track_${_trackIdCounter++}';
+      final trackId = 'track_$_trackIdCounter';
       final color = _trackColors[_trackIdCounter % _trackColors.length];
 
       final track = model.Track(
@@ -529,12 +529,13 @@ class TrackParserServiceImpl implements TrackParserService {
     String filename,
     model.TrackFormat format,
   ) {
+    final _trackIdCounter = DateTime.now().millisecondsSinceEpoch;
     // Simplify large tracks automatically (>5000 points)
     final finalTrackPoints =
         trackPoints.length > 5000 ? simplifyTrack(trackPoints, tolerance: 0.0001) : trackPoints;
 
     // Generate unique ID and assign color
-    final trackId = 'track_${_trackIdCounter++}';
+    final trackId = 'track_$_trackIdCounter';
     final color = _trackColors[_trackIdCounter % _trackColors.length];
 
     final track = model.Track(
