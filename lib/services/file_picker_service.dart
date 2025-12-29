@@ -14,8 +14,7 @@ class FilePickerServiceImpl implements FilePickerService {
   Future<File?> pickTrackFile(List<String> allowedExtensions) async {
     try {
       final result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: allowedExtensions,
+        type: FileType.any,
         allowMultiple: false,
       );
 
