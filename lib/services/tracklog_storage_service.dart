@@ -14,6 +14,13 @@ abstract class TracklogStorageService {
   Future<void> updateMetadata(TracklogMetadata metadata);
   Future<void> deleteTracklog(String id);
   Future<int> cleanupOrphanedFiles();
+
+  // T038: Migration support methods
+  Future<List<TracklogMetadata>> loadGuestMetadata();
+  Future<void> migrateTracklogOwnership(String tracklogId, String userId);
+
+  // T094: Account deletion support
+  Future<void> deleteAllUserTracklogs(String userId);
 }
 
 /// Implementation using shared_preferences + file system
@@ -148,6 +155,45 @@ class TracklogStorageServiceImpl implements TracklogStorageService {
     }
 
     return deleted;
+  }
+
+  // T038: Load guest tracklogs (tracklogs with no userId)
+  @override
+  Future<List<TracklogMetadata>> loadGuestMetadata() async {
+    final allMetadata = await loadAllMetadata();
+    return allMetadata.where((m) => m.userId == null).toList();
+  }
+
+  // T038: Migrate tracklog ownership from guest to authenticated user
+  @override
+  Future<void> migrateTracklogOwnership(String tracklogId, String userId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonStr = prefs.getString('$_metadataPrefix$tracklogId');
+
+    if (jsonStr == null) {
+      throw Exception('Tracklog metadata not found: $tracklogId');
+    }
+
+    // Load existing metadata
+    final metadata = TracklogMetadata.fromJson(jsonDecode(jsonStr));
+
+    // Update userId
+    final updatedMetadata = metadata.copyWith(userId: userId);
+
+    // Save updated metadata
+    await updateMetadata(updatedMetadata);
+  }
+
+  // T094: Delete all tracklogs belonging to a user (for account deletion)
+  @override
+  Future<void> deleteAllUserTracklogs(String userId) async {
+    final allMetadata = await loadAllMetadata();
+    final userTracklogs = allMetadata.where((m) => m.userId == userId).toList();
+
+    // Delete each tracklog owned by this user
+    for (final metadata in userTracklogs) {
+      await deleteTracklog(metadata.id);
+    }
   }
 
   // Helper: Track to JSON
