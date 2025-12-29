@@ -11,20 +11,45 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:local_map_with_tracklog/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('App launches with bottom navigation', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Verify that the bottom navigation bar exists
+    expect(find.byType(BottomNavigationBar), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Verify that all three navigation items are present
+    expect(find.text('Dashboard'), findsOneWidget);
+    expect(find.text('Map'), findsOneWidget);
+    expect(find.text('Settings'), findsOneWidget);
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('Bottom navigation switches tabs', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(const MyApp());
+
+    // Verify we start on the Map tab (default index 1)
+    expect(find.text('Local Map with Track Log'), findsOneWidget);
+
+    // Tap on Dashboard tab
+    await tester.tap(find.text('Dashboard'));
+    await tester.pumpAndSettle();
+
+    // Verify Dashboard screen is displayed
+    expect(find.text('Dashboard - Coming Soon'), findsOneWidget);
+
+    // Tap on Settings tab
+    await tester.tap(find.text('Settings'));
+    await tester.pumpAndSettle();
+
+    // Verify Settings screen is displayed (check for Logout which is unique)
+    expect(find.text('Logout'), findsWidgets);
+
+    // Tap back to Map tab
+    await tester.tap(find.text('Map'));
+    await tester.pumpAndSettle();
+
+    // Verify Map screen is displayed
+    expect(find.text('Local Map with Track Log'), findsOneWidget);
   });
 }
