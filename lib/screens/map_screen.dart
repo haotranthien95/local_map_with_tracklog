@@ -10,7 +10,7 @@ import '../services/file_picker_service.dart';
 import '../services/track_parser_service.dart';
 import '../services/location_service.dart';
 import '../services/tracklog_storage_service.dart';
-import '../widgets/map_view.dart';
+import 'package:local_map_with_tracklog/features/map/widgets/map_view.dart';
 import '../widgets/tracklog_dialogs.dart';
 import 'tracklog_list_screen.dart';
 
