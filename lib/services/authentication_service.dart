@@ -230,7 +230,9 @@ class AuthenticationService {
       if (appleCredential.givenName != null || appleCredential.familyName != null) {
         final displayName =
             '${appleCredential.givenName ?? ''} ${appleCredential.familyName ?? ''}'.trim();
-        if (displayName.isNotEmpty && userCredential.user!.displayName == null) {
+        if (displayName.isNotEmpty &&
+            userCredential.user!.displayName == null &&
+            (userCredential.user?.displayName ?? "").isEmpty) {
           await userCredential.user!.updateDisplayName(displayName);
         }
       }
