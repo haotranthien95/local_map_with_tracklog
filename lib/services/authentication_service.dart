@@ -230,7 +230,9 @@ class AuthenticationService {
       if (appleCredential.givenName != null || appleCredential.familyName != null) {
         final displayName =
             '${appleCredential.givenName ?? ''} ${appleCredential.familyName ?? ''}'.trim();
-        if (displayName.isNotEmpty && userCredential.user!.displayName == null) {
+        if (displayName.isNotEmpty &&
+            userCredential.user!.displayName == null &&
+            (userCredential.user?.displayName ?? "").isEmpty) {
           await userCredential.user!.updateDisplayName(displayName);
         }
       }
@@ -535,45 +537,170 @@ class AuthenticationService {
 
   /// T087: Delete user account permanently
   /// T088: Comprehensive data cleanup
-  Future<void> deleteAccount(String password) async {
+  /// Delete user account with provider reauthentication support (Feature 004)
+  ///
+  /// For email/password users: requires password parameter
+  /// For social-only users: automatically detects and uses provider reauthentication
+  ///
+  /// T014: Auto-retry after requires-recent-login error (User Story 2)
+  /// T016: Provider fallback (Google → Apple) (User Story 2)
+  /// T029: Hybrid user support (email/password + social fallback) (Polish)
+  Future<AuthResult> deleteAccount({String? password}) async {
     final user = _firebaseAuth.currentUser;
     if (user == null) {
-      throw Exception('No user signed in');
+      return AuthResult.failure(
+        'No user signed in',
+        errorCode: 'no-user',
+      );
     }
 
-    // Re-authenticate user before deletion (required by Firebase)
-    await _reauthenticateWithPassword(password);
+    try {
+      // T029: Detect user type and route to appropriate auth method
+      final isSocial = isSocialOnlyUser();
 
-    // T088: Clear all local data before deleting account
-    final userId = user.uid;
+      if (isSocial) {
+        // Social-only user: use provider reauthentication with fallback
+        final providers = getLinkedProviders();
+        if (providers.isEmpty) {
+          return AuthResult.failure(
+            AuthConstants.getErrorMessage('no-auth-method'),
+            errorCode: 'no-auth-method',
+          );
+        }
 
-    // T094: Delete all user tracklogs
+        // Try each provider in priority order (google → apple)
+        AuthResult? reauthResult;
+        for (final providerId in providers) {
+          if (providerId == 'google.com') {
+            reauthResult = await reauthenticateWithGoogle();
+          } else if (providerId == 'apple.com') {
+            reauthResult = await reauthenticateWithApple();
+          } else {
+            continue; // Skip unknown providers
+          }
+
+          if (reauthResult.success) {
+            break; // Success - stop trying other providers
+          }
+        }
+
+        if (reauthResult == null || !reauthResult.success) {
+          return reauthResult ??
+              AuthResult.failure(
+                AuthConstants.getErrorMessage('no-auth-method'),
+                errorCode: 'no-auth-method',
+              );
+        }
+      } else {
+        // T029: Hybrid user (email/password + possibly social)
+        // Try email/password first
+        if (password != null && password.isNotEmpty) {
+          try {
+            await _reauthenticateWithPassword(password);
+          } on firebase_auth.FirebaseAuthException catch (e) {
+            // If password auth fails and user has social providers, try fallback
+            final socialProviders = getLinkedProviders();
+            final hasSocialFallback =
+                socialProviders.any((p) => p == 'google.com' || p == 'apple.com');
+
+            if (hasSocialFallback &&
+                (e.code == 'wrong-password' || e.code == 'invalid-credential')) {
+              // Try social provider fallback
+              AuthResult? reauthResult;
+              for (final providerId in socialProviders) {
+                if (providerId == 'google.com') {
+                  reauthResult = await reauthenticateWithGoogle();
+                } else if (providerId == 'apple.com') {
+                  reauthResult = await reauthenticateWithApple();
+                } else {
+                  continue;
+                }
+
+                if (reauthResult.success) {
+                  break;
+                }
+              }
+
+              if (reauthResult == null || !reauthResult.success) {
+                // Social fallback also failed - return original password error
+                rethrow;
+              }
+            } else {
+              // No social fallback or different error - rethrow
+              rethrow;
+            }
+          }
+        } else {
+          return AuthResult.failure(
+            'Password is required',
+            errorCode: 'missing-password',
+          );
+        }
+      }
+
+      // T014: Attempt deletion (may fail with requires-recent-login)
+      try {
+        // T008: Cleanup local data with partial tolerance
+        await _cleanupLocalDataAfterDelete(user.uid);
+
+        // Delete Firebase user account
+        await user.delete();
+
+        return AuthResult.success(User.fromFirebaseUser(user));
+      } on firebase_auth.FirebaseAuthException catch (e) {
+        // T014: Auto-retry on requires-recent-login (shouldn't happen after reauth, but defensive)
+        if (e.code == 'requires-recent-login') {
+          // Reauthentication was stale - this shouldn't happen, but return error for UI to handle
+          return AuthResult.failure(
+            AuthConstants.getErrorMessage(e.code),
+            errorCode: e.code,
+          );
+        }
+        rethrow; // Other Firebase errors - let outer catch handle
+      }
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      return AuthResult.failure(
+        AuthConstants.getErrorMessage(e.code),
+        errorCode: e.code,
+      );
+    } catch (e) {
+      return AuthResult.failure(
+        'Account deletion failed: ${e.toString()}',
+        errorCode: 'unknown-error',
+      );
+    }
+  }
+
+  /// T008: Clean up local data after account deletion with partial tolerance
+  /// Continues even if individual cleanup operations fail
+  Future<void> _cleanupLocalDataAfterDelete(String userId) async {
+    // Delete all user tracklogs
     try {
       await _tracklogStorage.deleteAllUserTracklogs(userId);
     } catch (e) {
-      // Continue even if tracklog cleanup fails
-      print('Tracklog cleanup error: $e');
+      print('Tracklog cleanup error (continuing): $e');
     }
 
-    // T095: Clear tile cache (global cache)
+    // Clear tile cache (global cache)
     try {
       await _tileCache.clearCache();
     } catch (e) {
-      // Continue even if cache cleanup fails
-      print('Tile cache cleanup error: $e');
+      print('Tile cache cleanup error (continuing): $e');
     }
 
     // Clear secure tokens
-    await _tokenStorage.clearAllTokens();
+    try {
+      await _tokenStorage.clearAllTokens();
+    } catch (e) {
+      print('Token storage cleanup error (continuing): $e');
+    }
 
     // Clear user profile from shared_preferences
-    await _clearUserProfile(userId);
-
-    // Delete Firebase user account
-    await user.delete();
-
-    // Note: Tracklog cleanup and cache cleanup will be handled by
-    // dedicated service methods that should be called before this method
+    try {
+      await _clearUserProfile(userId);
+    } catch (e) {
+      print('User profile cleanup error (continuing): $e');
+    }
   }
 
   /// T097: Clear user profile data from shared_preferences
@@ -627,6 +754,165 @@ class AuthenticationService {
       );
     } catch (e) {
       return AuthResult.failure('Account linking failed: ${e.toString()}');
+    }
+  }
+
+  // ===== Feature 004: Provider Detection & Reauthentication =====
+
+  /// Check if Google provider is linked to current user
+  bool isGoogleLinked() {
+    final user = _firebaseAuth.currentUser;
+    if (user == null) return false;
+
+    return user.providerData.any(
+      (provider) => provider.providerId == 'google.com',
+    );
+  }
+
+  /// Check if Apple provider is linked to current user
+  bool isAppleLinked() {
+    final user = _firebaseAuth.currentUser;
+    if (user == null) return false;
+
+    return user.providerData.any(
+      (provider) => provider.providerId == 'apple.com',
+    );
+  }
+
+  /// Check if user is social-only (no email/password)
+  bool isSocialOnlyUser() {
+    final user = _firebaseAuth.currentUser;
+    if (user == null) return false;
+
+    final hasPassword = user.providerData.any(
+      (provider) => provider.providerId == 'password',
+    );
+
+    return !hasPassword && user.providerData.isNotEmpty;
+  }
+
+  /// Get linked providers in priority order (password > google.com > apple.com)
+  List<String> getLinkedProviders() {
+    final user = _firebaseAuth.currentUser;
+    if (user == null) return [];
+
+    const priority = ['password', 'google.com', 'apple.com'];
+    final providers = user.providerData.map((p) => p.providerId).toList();
+
+    providers.sort((a, b) {
+      final priorityA = priority.indexOf(a);
+      final priorityB = priority.indexOf(b);
+      if (priorityA == -1) return 1;
+      if (priorityB == -1) return -1;
+      return priorityA.compareTo(priorityB);
+    });
+
+    return providers;
+  }
+
+  /// Reauthenticate with Google Sign-In provider
+  Future<AuthResult> reauthenticateWithGoogle() async {
+    try {
+      final user = _firebaseAuth.currentUser;
+      if (user == null) {
+        return AuthResult.failure(
+          'No user signed in',
+          errorCode: 'no-current-user',
+        );
+      }
+
+      // Check if Google is linked
+      final hasGoogle = user.providerData.any((provider) => provider.providerId == 'google.com');
+
+      if (!hasGoogle) {
+        return AuthResult.failure(
+          'Google not linked to this account',
+          errorCode: 'provider-not-linked',
+        );
+      }
+
+      // Trigger Google Sign-In
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+
+      if (googleUser == null) {
+        return AuthResult.failure(
+          'Sign-in cancelled by user',
+          errorCode: 'popup-closed-by-user',
+        );
+      }
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      final credential = firebase_auth.GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      await user.reauthenticateWithCredential(credential);
+
+      return AuthResult.success(User.fromFirebaseUser(user));
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      return AuthResult.failure(
+        AuthConstants.getErrorMessage(e.code),
+        errorCode: e.code,
+      );
+    } catch (e) {
+      return AuthResult.failure(
+        'Reauthentication failed: ${e.toString()}',
+        errorCode: 'unknown-error',
+      );
+    }
+  }
+
+  /// Reauthenticate with Apple Sign-In provider
+  Future<AuthResult> reauthenticateWithApple() async {
+    try {
+      final user = _firebaseAuth.currentUser;
+      if (user == null) {
+        return AuthResult.failure(
+          'No user signed in',
+          errorCode: 'no-current-user',
+        );
+      }
+
+      // Check if Apple is linked
+      final hasApple = user.providerData.any((provider) => provider.providerId == 'apple.com');
+
+      if (!hasApple) {
+        return AuthResult.failure(
+          'Apple not linked to this account',
+          errorCode: 'provider-not-linked',
+        );
+      }
+
+      // Trigger Apple Sign-In
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      final oAuthProvider = firebase_auth.OAuthProvider('apple.com');
+      final credential = oAuthProvider.credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
+
+      await user.reauthenticateWithCredential(credential);
+
+      return AuthResult.success(User.fromFirebaseUser(user));
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      return AuthResult.failure(
+        AuthConstants.getErrorMessage(e.code),
+        errorCode: e.code,
+      );
+    } catch (e) {
+      return AuthResult.failure(
+        'Reauthentication failed: ${e.toString()}',
+        errorCode: 'unknown-error',
+      );
     }
   }
 

@@ -34,6 +34,12 @@ class AuthConstants {
     'too-many-requests': 'Too many failed attempts. Please try again later',
     'timeout': 'The operation timed out. Please try again',
 
+    // Provider reauthentication errors (Feature 004)
+    'provider-revoked': 'Provider access has been revoked. Please try a different sign-in method',
+    'provider-not-linked': 'This provider is not linked to your account',
+    'reauthentication-failed': 'Failed to verify your identity. Please try again',
+    'no-auth-method': 'No authentication method available for this account',
+
     // Generic errors
     'internal-error': 'An internal error occurred. Please try again',
     'invalid-api-key': 'Configuration error. Please contact support',

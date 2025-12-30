@@ -444,6 +444,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
             const SizedBox(height: 16),
 
             // T089: Delete Account button with warning styling
+            // T012: Updated to navigate to new delete account flow (Feature 004)
             Card(
               color: Colors.red.shade50,
               child: ListTile(
@@ -457,7 +458,10 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                   style: TextStyle(color: Colors.red),
                 ),
                 trailing: const Icon(Icons.chevron_right, color: Colors.red),
-                onTap: _showDeleteAccountDialog,
+                onTap: () {
+                  // T012: Navigate to delete account flow screen
+                  Navigator.of(context).pushNamed('/delete_account');
+                },
               ),
             ),
             const SizedBox(height: 24),
@@ -580,8 +584,8 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
       try {
         final password = passwordController.text;
 
-        // Delete account
-        await _authService.deleteAccount(password);
+        // Delete account (Legacy method - kept for reference but not used)
+        await _authService.deleteAccount(password: password);
 
         if (!mounted) return;
 

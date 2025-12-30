@@ -4,6 +4,7 @@ import 'screens/home_screen.dart';
 import 'screens/register_screen.dart'; // T054
 import 'screens/login_screen.dart'; // T070
 import 'services/authentication_service.dart'; // T104
+import 'features/auth/screens/delete_account_flow.dart'; // T011 - Feature 004
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,6 +50,7 @@ class _MyAppState extends State<MyApp> {
         '/register': (context) => const RegisterScreen(),
         '/home': (context) => const HomeScreen(),
         '/login': (context) => const LoginScreen(), // T070 - Phase 4
+        '/delete_account': (context) => const DeleteAccountFlow(), // T011 - Feature 004
       },
     );
   }
