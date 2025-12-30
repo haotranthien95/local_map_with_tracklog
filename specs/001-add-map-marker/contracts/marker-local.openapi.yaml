@@ -1,0 +1,103 @@
+openapi: 3.0.3
+info:
+  title: Marker Local Persistence API (logical contract)
+  version: 0.1.0
+  description: |
+    Logical contract for marker persistence used by the Flutter client. Implemented locally via shared_preferences in this iteration.
+servers:
+  - url: local://shared-preferences
+paths:
+  /markers:
+    get:
+      summary: List all markers for the current user/session
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Marker'
+    post:
+      summary: Create or replace the full marker list
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Marker'
+      responses:
+        '204':
+          description: Saved
+  /markers/{id}:
+    put:
+      summary: Upsert a single marker
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Marker'
+      responses:
+        '204':
+          description: Saved
+    delete:
+      summary: Delete a marker by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Deleted
+components:
+  schemas:
+    Marker:
+      type: object
+      required: [id, lat, lng, name, iconKey, colorHex, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+          example: marker_1735526400000
+        lat:
+          type: number
+          format: double
+          minimum: -90
+          maximum: 90
+          example: 37.4220
+        lng:
+          type: number
+          format: double
+          minimum: -180
+          maximum: 180
+          example: -122.0841
+        name:
+          type: string
+          minLength: 1
+          example: Trailhead
+        iconKey:
+          type: string
+          example: pin-default
+        colorHex:
+          type: string
+          pattern: '^#([A-Fa-f0-9]{6})$'
+          example: '#FF6F00'
+        createdAt:
+          type: integer
+          format: int64
+          example: 1735526400000
+        updatedAt:
+          type: integer
+          format: int64
+          example: 1735526400000
