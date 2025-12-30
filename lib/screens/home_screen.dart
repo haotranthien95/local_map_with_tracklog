@@ -13,11 +13,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   // Default to Map tab (index 1)
-  int _selectedIndex = 1;
+  int _selectedIndex = 0;
 
   // List of screens for each tab
   final List<Widget> _screens = const [
-    DashboardScreen(),
+    // DashboardScreen(),
     MapScreen(),
     SettingsScreen(),
   ];
@@ -39,10 +39,10 @@ class _HomeScreenState extends State<HomeScreen> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            label: 'Dashboard',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.dashboard),
+          //   label: 'Dashboard',
+          // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.map),
             label: 'Map',

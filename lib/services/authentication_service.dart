@@ -558,7 +558,7 @@ class AuthenticationService {
       // T029: Detect user type and route to appropriate auth method
       final isSocial = isSocialOnlyUser();
 
-      if (isSocial) {
+      if (isSocial && (password == null || password.isEmpty)) {
         // Social-only user: use provider reauthentication with fallback
         final providers = getLinkedProviders();
         if (providers.isEmpty) {

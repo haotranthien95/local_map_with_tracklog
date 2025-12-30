@@ -1,6 +1,7 @@
 // T010: Delete account flow screen (Feature 004)
 
 import 'package:flutter/material.dart';
+import 'package:local_map_with_tracklog/widgets/auth_text_field.dart';
 import '../../../services/authentication_service.dart';
 import '../widgets/delete_account_dialog.dart';
 
@@ -17,6 +18,8 @@ class DeleteAccountFlow extends StatefulWidget {
 
 class _DeleteAccountFlowState extends State<DeleteAccountFlow> {
   final AuthenticationService _authService = AuthenticationService();
+  final formKey = GlobalKey<FormState>();
+  final passwordController = TextEditingController();
 
   bool _isLoading = false;
   String? _errorMessage;
@@ -45,7 +48,104 @@ class _DeleteAccountFlowState extends State<DeleteAccountFlow> {
     }
   }
 
-  Future<void> _performDeletion() async {
+  Future<void> _showPasswordInput() async {
+    final confirmDelete = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Account?'),
+        backgroundColor: Colors.red.shade50,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.red.shade100,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.red.shade300),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.warning, color: Colors.red.shade700),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'This cannot be undone!',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red.shade700,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Deleting your account will:',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text('• Permanently remove all your account data',
+                style: TextStyle(color: Colors.grey[700])),
+            Text('• Delete all your saved tracklogs', style: TextStyle(color: Colors.grey[700])),
+            Text('• Cancel any active sessions', style: TextStyle(color: Colors.grey[700])),
+            Text('• Remove your profile information', style: TextStyle(color: Colors.grey[700])),
+            const SizedBox(height: 16),
+            const Text(
+              'To confirm, enter your password:',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            Form(
+              key: formKey,
+              child: AuthTextField(
+                controller: passwordController,
+                label: 'Password',
+                obscureText: true,
+                prefixIcon: const Icon(Icons.lock),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Password is required';
+                  }
+                  return null;
+                },
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+            ),
+            onPressed: () {
+              if (formKey.currentState!.validate()) {
+                Navigator.of(context).pop(true);
+              }
+            },
+            child: const Text(
+              'Delete Account',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (confirmDelete == true && mounted) {
+      _performDeletion(password: passwordController.text);
+    } else {
+      _cancel();
+    }
+  }
+
+  Future<void> _performDeletion({String? password}) async {
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -54,7 +154,7 @@ class _DeleteAccountFlowState extends State<DeleteAccountFlow> {
     });
 
     try {
-      final result = await _authService.deleteAccount();
+      final result = await _authService.deleteAccount(password: password);
 
       if (!mounted) return;
 
@@ -80,6 +180,12 @@ class _DeleteAccountFlowState extends State<DeleteAccountFlow> {
             _errorMessage = 'Sign-in cancelled. Your account was not deleted.';
             _errorCode = result.errorCode;
           });
+        } else if (result.errorCode == 'missing-password') {
+          // T016: Require reauthentication
+          setState(() {
+            _isLoading = false;
+          });
+          _showPasswordInput();
         } else {
           // Error - show error with retry/cancel buttons
           setState(() {
