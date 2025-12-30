@@ -80,7 +80,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       if (result.success) {
         // T048: Success flow - navigate to main screen
         _showSuccessMessage('Account created successfully!');
-        Navigator.of(context).pushReplacementNamed('/home');
+        _navigateToHome();
       } else {
         // T047: Error handling with user-friendly messages
         setState(() {
@@ -115,7 +115,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       if (result.success) {
         _showSuccessMessage('Signed in with Google successfully!');
-        Navigator.of(context).pushReplacementNamed('/home');
+        _navigateToHome();
       } else {
         setState(() {
           _errorMessage = result.error;
@@ -128,6 +128,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
         });
       }
     }
+  }
+
+  void _navigateToHome() {
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      '/',
+      (route) => false,
+    );
   }
 
   /// T043: Handle Apple Sign In registration
@@ -144,7 +151,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       if (result.success) {
         _showSuccessMessage('Signed in with Apple successfully!');
-        Navigator.of(context).pushReplacementNamed('/home');
+        _navigateToHome();
       } else {
         setState(() {
           _errorMessage = result.error;
