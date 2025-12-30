@@ -8,12 +8,14 @@ class AuthResult {
   final User? user;
   final String? error;
   final String? errorCode;
+  final bool? needAction;
 
   const AuthResult({
     required this.success,
     this.user,
     this.error,
     this.errorCode,
+    this.needAction,
   });
 
   /// Create a successful result
@@ -21,6 +23,13 @@ class AuthResult {
     return AuthResult(
       success: true,
       user: user,
+    );
+  }
+
+  factory AuthResult.require() {
+    return const AuthResult(
+      success: false,
+      needAction: true,
     );
   }
 
