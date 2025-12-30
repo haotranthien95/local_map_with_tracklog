@@ -36,6 +36,7 @@ class _MapScreenState extends State<MapScreen> {
   bool _hasCheckedStorageWarning = false;
   DeviceLocation? _currentLocation;
   StreamSubscription<DeviceLocation?>? _locationSubscription;
+  bool firstTime = false;
 
   @override
   void initState() {
@@ -63,10 +64,15 @@ class _MapScreenState extends State<MapScreen> {
     // Subscribe to location updates
     _locationSubscription = _locationService.locationStream.listen(
       (location) {
-        if (mounted) {
+        if (mounted && location != null) {
           setState(() {
             _currentLocation = location;
           });
+          if (!firstTime) {
+            firstTime = true;
+            // Center map on initial location
+            _mapViewKey.currentState?.centerOnLocation(location.toLatLng());
+          }
         }
       },
     );
@@ -202,7 +208,8 @@ class _MapScreenState extends State<MapScreen> {
         key: _mapViewKey,
         mapStyle: _currentMapStyle,
         tracks: _tracks,
-        initialCenter: const LatLng(51.5, -0.09), // Default to London
+        initialCenter:
+            _currentLocation?.toLatLng() ?? const LatLng(11.551356596401469, 108.52344619476199),
         initialZoom: 13.0,
         deviceLocation: _currentLocation,
         showLocationIndicator: true,

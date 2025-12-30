@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart' as fm;
 import 'package:latlong2/latlong.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:local_map_with_tracklog/widgets/live_compass.dart';
 import '../models/map_style.dart';
 import '../models/track.dart' as model;
 import '../models/device_location.dart';
@@ -126,7 +127,7 @@ class MapViewState extends State<MapView> {
         // Map info overlay
         if (widget.showMapInfo)
           Positioned(
-            left: 8,
+            left: 64,
             bottom: 8,
             child: Container(
               decoration: BoxDecoration(
@@ -145,6 +146,18 @@ class MapViewState extends State<MapView> {
                   fontFamily: 'monospace',
                 ),
               ),
+            ),
+          ),
+        if (widget.showMapInfo)
+          Positioned(
+            left: 8,
+            bottom: 8,
+            child: LiveCompass(
+              size: 52,
+              backgroundColor: Colors.black.withOpacity(0.7),
+              ringColor: Colors.grey.shade800,
+              northColor: Colors.red.shade400,
+              textColor: Colors.white70,
             ),
           ),
       ],

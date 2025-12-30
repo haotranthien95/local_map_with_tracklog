@@ -47,6 +47,7 @@ class _MyAppState extends State<MyApp> {
       // T054, T070: Add named routes for authentication screens
       routes: {
         '/register': (context) => const RegisterScreen(),
+        '/home': (context) => const HomeScreen(),
         '/login': (context) => const LoginScreen(), // T070 - Phase 4
       },
     );
