@@ -76,6 +76,7 @@ class MapViewState extends State<MapView> {
           options: fm.MapOptions(
             initialCenter: widget.initialCenter ?? const LatLng(51.5, -0.09),
             initialZoom: widget.initialZoom,
+            interactionOptions: const fm.InteractionOptions(),
             onPositionChanged: (position, hasGesture) {
               setState(() {
                 _currentCenter = position.center ?? _currentCenter;
@@ -133,23 +134,22 @@ class MapViewState extends State<MapView> {
                     ),
                   );
                 }).toList(),
+                rotate: true,
               ),
             if (widget.showLocationIndicator && widget.deviceLocation != null)
               fm.MarkerLayer(
                 markers: [
                   fm.Marker(
                     point: widget.deviceLocation!.toLatLng(),
-                    width: 20,
-                    height: 20,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: widget.deviceLocation!.isActive ? Colors.blue : Colors.grey,
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 2,
-                        ),
-                      ),
+                    width: 40,
+                    height: 40,
+                    child: LiveCompass(
+                      size: 40,
+                      backgroundColor: Colors.blue.withOpacity(0.2),
+                      ringColor: Colors.transparent,
+                      northColor: Colors.red.shade400,
+                      textColor: Colors.white70,
+                      isActive: widget.deviceLocation?.isActive ?? false,
                     ),
                   ),
                 ],
@@ -239,6 +239,10 @@ class MapViewState extends State<MapView> {
 
   void centerOnLocation(LatLng location) {
     _mapController.move(location, _mapController.camera.zoom);
+  }
+
+  void toNorth() {
+    _mapController.rotate(0.0);
   }
 
   Color _colorFromHex(String hex) {

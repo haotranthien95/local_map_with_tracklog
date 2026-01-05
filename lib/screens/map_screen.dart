@@ -221,6 +221,14 @@ class _MapScreenState extends State<MapScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           // Center on location button
+          FloatingActionButton(
+            heroTag: 'to_north',
+            onPressed: () {
+              _mapViewKey.currentState?.toNorth();
+            },
+            child: const Icon(Icons.north_sharp),
+          ),
+          const SizedBox(height: 16),
           if (_currentLocation != null)
             FloatingActionButton(
               heroTag: 'center_location',

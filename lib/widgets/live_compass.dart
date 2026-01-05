@@ -1,6 +1,6 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
+import 'dart:math' as math;
 
 class LiveCompass extends StatelessWidget {
   const LiveCompass({
@@ -10,9 +10,11 @@ class LiveCompass extends StatelessWidget {
     this.ringColor = const Color(0xFF2A2A2A),
     this.northColor = const Color(0xFFE53935),
     this.textColor = Colors.white70,
+    this.isActive = true,
   });
 
   final double size;
+  final bool isActive;
   final Color backgroundColor;
   final Color ringColor;
   final Color northColor;
@@ -27,47 +29,19 @@ class LiveCompass extends StatelessWidget {
       child: StreamBuilder<CompassEvent>(
         stream: FlutterCompass.events,
         builder: (context, snapshot) {
-          print('CompassEvent snapshot: ${snapshot.data}');
-          // heading: 0 = Bắc, 90 = Đông, ...
-          final heading = (snapshot.data?.heading) ?? 0; // degrees (double?)
-          if (heading == null) {
-            return _buildContainer(
-              child: const Center(
-                child: SizedBox(
-                  width: 14,
-                  height: 14,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ),
-              ),
-            );
-          }
-
-          // Xoay mặt la bàn ngược lại để kim luôn chỉ Bắc
-          final angleRad = -heading * (math.pi / 180.0);
+          final heading = (snapshot.data?.heading) ?? 0;
 
           return _buildContainer(
             child: Transform.rotate(
-              angle: angleRad,
+              angle: -heading * math.pi / 180,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  // chữ N ở trên
-                  Positioned(
-                    top: 4,
-                    child: Text(
-                      'N',
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        color: textColor,
-                      ),
-                    ),
-                  ),
                   // Kim Bắc (đỏ)
                   Align(
                     alignment: Alignment.topCenter,
                     child: Container(
-                      width: 2.6,
+                      width: size * 0.12,
                       height: size * 0.36,
                       decoration: BoxDecoration(
                         color: northColor,
@@ -84,12 +58,15 @@ class LiveCompass extends StatelessWidget {
                   ),
                   // Tâm
                   Container(
-                    width: 7,
-                    height: 7,
+                    width: size * 0.4,
+                    height: size * 0.4,
                     decoration: BoxDecoration(
-                      color: Colors.white,
                       shape: BoxShape.circle,
-                      border: Border.all(color: ringColor, width: 1),
+                      color: isActive ? Colors.blue : Colors.grey,
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 2,
+                      ),
                     ),
                   ),
                 ],
