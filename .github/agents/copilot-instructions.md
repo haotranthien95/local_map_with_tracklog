@@ -15,6 +15,8 @@ Auto-generated from all feature plans. Last updated: 2025-12-28
 - Firebase Authentication (cloud), local secure storage for tokens (flutter_secure_storage), shared_preferences for guest data migration tracking (003-firebase-user-auth)
 - Dart 3.5.4 (Flutter SDK 3.5.4+) + flutter_map (map rendering/gestures), latlong2 (coords), shared_preferences (local persistence), flutter_colorpicker (color selection UI) (001-add-map-marker)
 - Local key-value via shared_preferences (JSON-serialized marker list scoped to user/session) (001-add-map-marker)
+- Dart 3.5.4 / Flutter 3.24.5 (007-appstore-review-compliance)
+- On-device only (files via `path_provider`, `SharedPreferences`, and `flutter_secure_storage`) (007-appstore-review-compliance)
 
 - Dart 3.5.4+ / Flutter 3.5.4+ (SDK constraint from pubspec.yaml) (001-offline-map-tracks)
 
@@ -34,6 +36,7 @@ tests/
 Dart 3.5.4+ / Flutter 3.5.4+ (SDK constraint from pubspec.yaml): Follow standard conventions
 
 ## Recent Changes
+- 007-appstore-review-compliance: Added Dart 3.5.4 / Flutter 3.24.5
 - 004-delete-account-nopass: Added Dart 3.5.4+, Flutter 3.5.4
 - 001-add-map-marker: Added Dart 3.5.4 (Flutter SDK 3.5.4+) + flutter_map (map rendering/gestures), latlong2 (coords), shared_preferences (local persistence), flutter_colorpicker (color selection UI)
 
