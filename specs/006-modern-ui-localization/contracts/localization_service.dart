@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 abstract class ILocalizationService {
   /// Returns the current locale
   Locale get currentLocale;
