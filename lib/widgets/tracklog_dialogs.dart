@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import '../l10n/l10n_extension.dart';
 
 /// Show dialog to input/edit tracklog name
 Future<String?> showNameDialog(
@@ -13,20 +14,21 @@ Future<String?> showNameDialog(
   return showDialog<String>(
     context: context,
     builder: (context) => AlertDialog(
-      title: Text(title ?? (initialValue == null ? 'Name Tracklog' : 'Rename Tracklog')),
+      title: Text(title ??
+          (initialValue == null ? context.l10n.nameTracklog : context.l10n.renameTracklog)),
       content: Form(
         key: formKey,
         child: TextFormField(
           controller: controller,
-          decoration: const InputDecoration(
-            labelText: 'Name',
-            hintText: 'Enter tracklog name',
+          decoration: InputDecoration(
+            labelText: context.l10n.name,
+            hintText: context.l10n.enterTracklogName,
           ),
           autofocus: true,
           maxLength: 100,
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return 'Name cannot be empty';
+              return context.l10n.nameCannotBeEmpty;
             }
             return null;
           },
@@ -40,7 +42,7 @@ Future<String?> showNameDialog(
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text(context.l10n.cancel),
         ),
         TextButton(
           onPressed: () {
@@ -48,7 +50,7 @@ Future<String?> showNameDialog(
               Navigator.pop(context, controller.text.trim());
             }
           },
-          child: const Text('OK'),
+          child: Text(context.l10n.ok),
         ),
       ],
     ),
@@ -65,7 +67,7 @@ Future<Color?> showColorPickerDialog(
   return showDialog<Color>(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('Choose Color'),
+      title: Text(context.l10n.chooseColor),
       content: SingleChildScrollView(
         child: BlockPicker(
           pickerColor: currentColor,
@@ -97,11 +99,11 @@ Future<Color?> showColorPickerDialog(
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text(context.l10n.cancel),
         ),
         TextButton(
           onPressed: () => Navigator.pop(context, selectedColor),
-          child: const Text('OK'),
+          child: Text(context.l10n.ok),
         ),
       ],
     ),

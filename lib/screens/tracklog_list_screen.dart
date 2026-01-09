@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n_extension.dart';
 import '../models/tracklog_metadata.dart';
 import '../widgets/tracklog_dialogs.dart';
 
@@ -31,7 +32,7 @@ class _TracklogListScreenState extends State<TracklogListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tracklogs'),
+        title: Text(context.l10n.tracklogs),
       ),
       body: widget.tracklogs.isEmpty ? _buildEmptyState() : _buildList(),
     );
@@ -49,7 +50,7 @@ class _TracklogListScreenState extends State<TracklogListScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            'No tracklogs added yet',
+            context.l10n.noTracklogsAdded,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: Colors.grey[600],
                 ),
@@ -70,7 +71,7 @@ class _TracklogListScreenState extends State<TracklogListScreen> {
             color: tracklog.isVisible ? tracklog.color : Colors.grey,
           ),
           title: Text(tracklog.name),
-          subtitle: Text('Imported: ${_formatDate(tracklog.importedAt)}'),
+          subtitle: Text('${context.l10n.imported}: ${_formatDate(tracklog.importedAt)}'),
           trailing: PopupMenuButton<String>(
             onSelected: (value) => _handleMenuAction(value, tracklog),
             itemBuilder: (context) => [
@@ -83,37 +84,37 @@ class _TracklogListScreenState extends State<TracklogListScreen> {
                       size: 20,
                     ),
                     const SizedBox(width: 8),
-                    Text(tracklog.isVisible ? 'Hide' : 'Show'),
+                    Text(tracklog.isVisible ? context.l10n.hide : context.l10n.show),
                   ],
                 ),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'rename',
                 child: Row(
                   children: [
-                    Icon(Icons.edit, size: 20),
-                    SizedBox(width: 8),
-                    Text('Rename'),
+                    const Icon(Icons.edit, size: 20),
+                    const SizedBox(width: 8),
+                    Text(context.l10n.rename),
                   ],
                 ),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'change_color',
                 child: Row(
                   children: [
-                    Icon(Icons.palette, size: 20),
-                    SizedBox(width: 8),
-                    Text('Change Color'),
+                    const Icon(Icons.palette, size: 20),
+                    const SizedBox(width: 8),
+                    Text(context.l10n.changeColor),
                   ],
                 ),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'remove',
                 child: Row(
                   children: [
-                    Icon(Icons.delete, size: 20, color: Colors.red),
-                    SizedBox(width: 8),
-                    Text('Remove', style: TextStyle(color: Colors.red)),
+                    const Icon(Icons.delete, size: 20, color: Colors.red),
+                    const SizedBox(width: 8),
+                    Text(context.l10n.remove, style: const TextStyle(color: Colors.red)),
                   ],
                 ),
               ),
@@ -169,8 +170,9 @@ class _TracklogListScreenState extends State<TracklogListScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-            updated.isVisible ? '${updated.name} is now visible' : '${updated.name} is now hidden'),
+        content: Text(updated.isVisible
+            ? context.l10n.isVisibleNow(updated.name)
+            : context.l10n.isHiddenNow(updated.name)),
         duration: const Duration(seconds: 2),
       ),
     );
@@ -180,7 +182,7 @@ class _TracklogListScreenState extends State<TracklogListScreen> {
     final newName = await showNameDialog(
       context,
       initialValue: tracklog.name,
-      title: 'Rename Tracklog',
+      title: context.l10n.renameTracklog,
     );
 
     if (newName == null || newName == tracklog.name) return;

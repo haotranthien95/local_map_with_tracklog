@@ -1,6 +1,7 @@
 // T041: AuthButton widget for styled authentication action buttons
 
 import 'package:flutter/material.dart';
+import '../theme/app_theme_config.dart';
 
 /// Styled button for authentication actions
 class AuthButton extends StatelessWidget {
@@ -25,12 +26,13 @@ class AuthButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = backgroundColor ?? (isPrimary ? Theme.of(context).primaryColor : Colors.white);
-    final fgColor = textColor ?? (isPrimary ? Colors.white : Theme.of(context).primaryColor);
+    final theme = Theme.of(context);
+    final bgColor = backgroundColor ?? (isPrimary ? theme.primaryColor : theme.colorScheme.surface);
+    final fgColor = textColor ?? (isPrimary ? theme.colorScheme.onPrimary : theme.primaryColor);
 
     return SizedBox(
       width: double.infinity,
-      height: 50,
+      height: 56,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
@@ -38,15 +40,17 @@ class AuthButton extends StatelessWidget {
           foregroundColor: fgColor,
           elevation: isPrimary ? 2 : 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-            side: isPrimary ? BorderSide.none : BorderSide(color: Theme.of(context).primaryColor),
+            borderRadius: BorderRadius.circular(AppThemeConfig.borderRadius),
+            side: isPrimary
+                ? BorderSide.none
+                : BorderSide(color: theme.primaryColor.withOpacity(0.5)),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         ),
         child: isLoading
             ? SizedBox(
-                height: 20,
-                width: 20,
+                height: 24,
+                width: 24,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
                   valueColor: AlwaysStoppedAnimation<Color>(fgColor),
@@ -57,14 +61,14 @@ class AuthButton extends StatelessWidget {
                 children: [
                   if (icon != null) ...[
                     icon!,
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 12),
                   ],
                   Text(
                     text,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: fgColor,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.5,
                     ),
                   ),
                 ],

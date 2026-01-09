@@ -1,6 +1,7 @@
 // T045: LoadingOverlay widget for showing during async auth operations
 
 import 'package:flutter/material.dart';
+import '../theme/app_theme_config.dart';
 
 /// Loading overlay that covers the screen during async operations
 class LoadingOverlay extends StatelessWidget {
@@ -25,24 +26,26 @@ class LoadingOverlay extends StatelessWidget {
             color: Colors.black.withOpacity(0.5),
             child: Center(
               child: Card(
-                elevation: 8,
+                elevation: 0,
+                color: Theme.of(context).cardColor.withOpacity(0.9),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(AppThemeConfig.borderRadius),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(24.0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const CircularProgressIndicator(),
+                      CircularProgressIndicator(
+                        color: Theme.of(context).primaryColor,
+                      ),
                       if (message != null) ...[
                         const SizedBox(height: 16),
                         Text(
                           message!,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
                         ),
                       ],
                     ],

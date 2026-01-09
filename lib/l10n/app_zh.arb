@@ -1,0 +1,160 @@
+{
+  "@@locale": "zh",
+  "appTitle": "本地地图与轨迹追踪",
+  
+  "login": "登录",
+  "register": "创建账号",
+  "email": "邮箱",
+  "password": "密码",
+  "confirmPassword": "确认密码",
+  "home": "首页",
+  "settings": "设置",
+  "profile": "个人资料",
+  "logout": "退出登录",
+  "account": "账户",
+  "deleteAccount": "注销账号",
+  "language": "语言",
+  "theme": "主题",
+  "light": "浅色",
+  "dark": "深色",
+  "system": "跟随系统",
+  "confirm": "确认",
+  "cancel": "取消",
+  "save": "保存",
+  "retry": "重试",
+  "notifications": "通知",
+  "map": "地图",
+  "error": "错误",
+  "success": "成功",
+  
+  "welcomeBack": "欢迎回来",
+  "signInToContinue": "登录以继续",
+  "forgotPassword": "忘记密码？",
+  "dontHaveAccount": "没有账号？",
+  "signIn": "登录",
+  "or": "或者",
+  "continueWithGoogle": "使用 Google 继续",
+  "continueWithApple": "使用 Apple 继续",
+  
+  "welcome": "欢迎！",
+  "createAccountToSave": "创建账号以保存您的轨迹日志",
+  "alreadyHaveAccount": "已有账号？",
+  "passwordRequirements": "密码必须至少包含 8 个字符，且包括大写字母、小写字母和数字",
+  
+  "storageWarning": "存储警告",
+  "storageWarningMessage": "您的地图缓存占用大量存储空间。是否要清除旧的切片以释放空间？",
+  "clearCache": "清除缓存",
+  "notNow": "以后再说",
+  "cacheCleared": "缓存清除成功",
+  
+  "importTrack": "导入轨迹",
+  "centerOnLocation": "定位到当前位置",
+  "toNorth": "指北",
+  
+  "anonymousUser": "匿名用户",
+  "noUserSignedIn": "未登录用户",
+  "editDisplayName": "编辑显示名称",
+  "displayName": "显示名称",
+  "accountInformation": "账号信息",
+  "memberSince": "成员时间",
+  "emailVerified": "邮箱已验证",
+  "accountSettings": "账号设置",
+  
+  "deleteAccountConfirm": "注销账号？",
+  "deletionWarning": "此操作将无法撤销！",
+  "deletionItems": "注销账号将会：",
+  "deletionPermanentlyRemove": "永久移除所有账号数据",
+  "deletionDeleteTracks": "删除所有保存的轨迹日志",
+  "deletionCancelSessions": "取消所有活动会话",
+  "deletionRemoveProfile": "移除您的个人资料信息",
+  "enterPasswordToConfirm": "输入密码以确认：",
+  
+  "loading": "加载中...",
+  "verifying": "验证中...",
+  "updating": "更新中...",
+  "locationPermissionDenied": "位置权限被拒绝",
+  "couldNotLoadTracklogs": "无法加载保存的轨迹日志",
+  "trackImportedSuccessfully": "轨迹 \"{name}\" 导入成功",
+  "@trackImportedSuccessfully": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "importingTrack": "正在导入轨迹...",
+  "failedToImportTrack": "导入轨迹失败: {error}",
+  "@failedToImportTrack": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "failedToUpdateTracklog": "更新轨迹日志失败: {error}",
+  "@failedToUpdateTracklog": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "failedToDeleteTracklog": "删除轨迹日志失败: {error}",
+  "@failedToDeleteTracklog": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cacheStorageInfo": "缓存存储信息",
+  "totalSize": "总大小",
+  "tileCount": "切片数量",
+  "storageUsage": "存储使用情况",
+  "storageWarningThresholdReached": "已达到存储警告阈值",
+  "storageUsageNormal": "存储使用正常",
+  "close": "关闭",
+  "undo": "撤销",
+  "tracklogs": "轨迹日志",
+  "noTracklogsAdded": "尚未添加轨迹日志",
+  "imported": "已导入",
+  "hide": "隐藏",
+  "show": "显示",
+  "rename": "重命名",
+  "changeColor": "修改颜色",
+  "remove": "移除",
+  "renameTracklog": "重命名轨迹日志",
+  "isVisibleNow": "{name} 现在可见",
+  "@isVisibleNow": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "isHiddenNow": "{name} 现在已隐藏",
+  "@isHiddenNow": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "nameTracklog": "命名轨迹日志",
+  "name": "名称",
+  "enterTracklogName": "输入轨迹日志名称",
+  "nameCannotBeEmpty": "名称不能为空",
+  "ok": "确定",
+  "chooseColor": "选择颜色",
+  "addMarker": "添加标记",
+  "addMarkerQuestion": "添加标记？",
+  "addMarkerAtLocation": "在此位置添加标记？",
+  "chooseIcon": "选择图标",
+  "nameMarker": "命名标记",
+  "next": "下一步",
+  "back": "上一步",
+  "create": "创建",
+  "markerName": "标记名称",
+  "enterName": "输入名称",
+  "markerStepInstruction": "您可以在接下来的步骤中选择图标、颜色和名称。"
+}

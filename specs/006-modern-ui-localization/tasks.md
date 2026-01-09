@@ -15,10 +15,10 @@
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 [P] Add dependencies `flutter_localizations`, `intl`, `google_fonts`, `shared_preferences` to `pubspec.yaml`
-- [ ] T002 Initialize localization config in `l10n.yaml`
-- [ ] T003 [P] Create directory `lib/l10n/` for ARB files
-- [ ] T004 Create directory `lib/theme/` for styling logic
+- [x] T001 [P] Add dependencies `flutter_localizations`, `intl`, `google_fonts`, `shared_preferences` to `pubspec.yaml`
+- [x] T002 Initialize localization config in `l10n.yaml`
+- [x] T003 [P] Create directory `lib/l10n/` for ARB files
+- [x] T004 Create directory `lib/theme/` for styling logic
 
 ---
 
@@ -27,10 +27,10 @@
 **Purpose**: Core infrastructure that MUST be complete before ANY user story can be implemented
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T005 [P] Implement `UserPreferences` entity in `lib/models/user_preferences.dart`
-- [ ] T006 [P] Implement `ILocalizationService` contract in `lib/services/localization_service.dart` (interface)
-- [ ] T007 [P] Implement `IThemeService` contract in `lib/services/theme_service.dart` (interface)
-- [ ] T008 [P] Initialize base ARB template `lib/l10n/app_en.arb` with shared labels
+- [x] T005 [P] Implement `UserPreferences` entity in `lib/models/user_preferences.dart`
+- [x] T006 [P] Implement `ILocalizationService` contract in `lib/services/localization_service.dart` (interface)
+- [x] T007 [P] Implement `IThemeService` contract in `lib/services/theme_service.dart` (interface)
+- [x] T008 [P] Initialize base ARB template `lib/l10n/app_en.arb` with shared labels
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 

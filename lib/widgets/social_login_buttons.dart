@@ -1,6 +1,7 @@
 // T044: SocialLoginButtons widget for Google and Apple sign-in buttons
 
 import 'package:flutter/material.dart';
+import '../theme/app_theme_config.dart';
 
 /// Social login buttons for Google and Apple Sign In
 class SocialLoginButtons extends StatelessWidget {
@@ -70,9 +71,11 @@ class _SocialButton extends StatelessWidget {
         style: OutlinedButton.styleFrom(
           backgroundColor: backgroundColor,
           foregroundColor: textColor,
-          side: BorderSide(color: Colors.grey[300]!),
+          side: BorderSide(
+            color: Theme.of(context).dividerColor.withOpacity(0.1),
+          ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(AppThemeConfig.borderRadius),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         ),

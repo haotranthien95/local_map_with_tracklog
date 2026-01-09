@@ -9,11 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:local_map_with_tracklog/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   testWidgets('App launches with bottom navigation', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(MyApp(
+      prefs: await SharedPreferences.getInstance(),
+    ));
 
     // Verify that the bottom navigation bar exists
     expect(find.byType(BottomNavigationBar), findsOneWidget);
@@ -26,7 +29,9 @@ void main() {
 
   testWidgets('Bottom navigation switches tabs', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(MyApp(
+      prefs: await SharedPreferences.getInstance(),
+    ));
 
     // Verify we start on the Map tab (default index 1)
     expect(find.text('Local Map with Track Log'), findsOneWidget);

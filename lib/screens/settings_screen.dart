@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'profile_screen.dart'; // T085
 import '../services/authentication_service.dart'; // T098-T102
+import '../main.dart';
+import 'package:local_map_with_tracklog/l10n/l10n_extension.dart';
 
 /// Settings screen with profile and logout sections
 class SettingsScreen extends StatefulWidget {
@@ -18,15 +20,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: Text(context.l10n.settings),
       ),
       body: ListView(
         children: [
           const SizedBox(height: 20),
-          _buildSectionHeader('Profile'),
+          _buildSectionHeader(context.l10n.profile),
           ListTile(
             leading: const Icon(Icons.person),
-            title: const Text('Profile'),
+            title: Text(context.l10n.profile),
             subtitle: const Text('View and edit your profile'),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
@@ -40,10 +42,74 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           const Divider(),
           const SizedBox(height: 20),
-          _buildSectionHeader('Account'),
+          _buildSectionHeader(context.l10n.theme),
+          ListTile(
+            leading: const Icon(Icons.brightness_6),
+            title: Text(context.l10n.theme),
+            trailing: DropdownButton<ThemeMode>(
+              value: Theme.of(context).brightness == Brightness.light
+                  ? ThemeMode.light
+                  : ThemeMode.dark, // Simplified
+              onChanged: (ThemeMode? newMode) {
+                if (newMode != null) {
+                  MyApp.of(context).setThemeMode(newMode);
+                }
+              },
+              items: [
+                DropdownMenuItem(
+                  value: ThemeMode.system,
+                  child: Text(context.l10n.system),
+                ),
+                DropdownMenuItem(
+                  value: ThemeMode.light,
+                  child: Text(context.l10n.light),
+                ),
+                DropdownMenuItem(
+                  value: ThemeMode.dark,
+                  child: Text(context.l10n.dark),
+                ),
+              ],
+            ),
+          ),
+          const Divider(),
+          const SizedBox(height: 20),
+          _buildSectionHeader(context.l10n.language),
+          ListTile(
+            leading: const Icon(Icons.language),
+            title: Text(context.l10n.language),
+            trailing: DropdownButton<Locale>(
+              value: Localizations.localeOf(context),
+              onChanged: (Locale? newLocale) {
+                if (newLocale != null) {
+                  MyApp.of(context).setLocale(newLocale);
+                }
+              },
+              items: const [
+                DropdownMenuItem(
+                  value: Locale('en'),
+                  child: Text('English'),
+                ),
+                DropdownMenuItem(
+                  value: Locale('vi'),
+                  child: Text('Tiếng Việt'),
+                ),
+                DropdownMenuItem(
+                  value: Locale('zh'),
+                  child: Text('中文'),
+                ),
+                DropdownMenuItem(
+                  value: Locale('ja'),
+                  child: Text('日本語'),
+                ),
+              ],
+            ),
+          ),
+          const Divider(),
+          const SizedBox(height: 20),
+          _buildSectionHeader(context.l10n.account),
           ListTile(
             leading: const Icon(Icons.logout),
-            title: const Text('Logout'),
+            title: Text(context.l10n.logout),
             subtitle: const Text('Sign out of your account'),
             enabled: !_isLoggingOut,
             onTap: _isLoggingOut ? null : _handleLogout,
@@ -59,19 +125,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Logout?'),
+        title: Text(context.l10n.logout + '?'),
         content: const Text('Are you sure you want to sign out of your account?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
             ),
-            child: const Text('Logout', style: TextStyle(color: Colors.white)),
+            child: Text(context.l10n.logout),
           ),
         ],
       ),
@@ -104,12 +171,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.bold,
-          color: Colors.grey,
-        ),
+        title.toUpperCase(),
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: Theme.of(context).primaryColor,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.2,
+            ),
       ),
     );
   }

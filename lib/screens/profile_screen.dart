@@ -5,6 +5,7 @@ import '../services/authentication_service.dart';
 import '../models/user.dart';
 import '../widgets/loading_overlay.dart';
 import 'account_settings_screen.dart';
+import 'package:local_map_with_tracklog/l10n/l10n_extension.dart';
 
 /// T076: Profile screen to display and edit user information
 class ProfileScreen extends StatefulWidget {
@@ -76,9 +77,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       // T079: Success feedback
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Display name updated successfully'),
-          backgroundColor: Colors.green,
+        SnackBar(
+          content: const Text('Display name updated successfully'),
+          backgroundColor: Theme.of(context).primaryColor,
         ),
       );
 
@@ -148,15 +149,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: Text(context.l10n.profile),
         centerTitle: true,
       ),
       body: LoadingOverlay(
         isLoading: _isLoading,
-        message: 'Updating profile...',
+        message: context.l10n.updating,
         child: _currentUser == null
-            ? const Center(
-                child: Text('No user signed in'),
+            ? Center(
+                child: Text(context.l10n.noUserSignedIn),
               )
             : SingleChildScrollView(
                 padding: const EdgeInsets.all(24.0),
@@ -169,7 +170,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         children: [
                           CircleAvatar(
                             radius: 50,
-                            backgroundColor: Colors.blue.shade100,
+                            backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
                             child: _currentUser!.photoUrl != null
                                 ? ClipOval(
                                     child: Image.network(
@@ -181,7 +182,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         return Icon(
                                           Icons.person,
                                           size: 50,
-                                          color: Colors.blue.shade700,
+                                          color: Theme.of(context).primaryColor,
                                         );
                                       },
                                     ),
@@ -189,24 +190,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 : Icon(
                                     Icons.person,
                                     size: 50,
-                                    color: Colors.blue.shade700,
+                                    color: Theme.of(context).primaryColor,
                                   ),
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            _currentUser!.displayName ?? 'Anonymous User',
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            _currentUser!.displayName ?? context.l10n.anonymousUser,
+                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                           const SizedBox(height: 8),
                           Text(
                             _currentUser!.email,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey[600],
-                            ),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  color: Theme.of(context).textTheme.bodySmall?.color,
+                                ),
                           ),
                         ],
                       ),
@@ -219,18 +218,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         padding: const EdgeInsets.all(12),
                         margin: const EdgeInsets.only(bottom: 16),
                         decoration: BoxDecoration(
-                          color: Colors.red.shade50,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.red.shade200),
+                          color: Theme.of(context).colorScheme.errorContainer,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.error.withOpacity(0.2),
+                          ),
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.error_outline, color: Colors.red.shade700),
+                            Icon(
+                              Icons.error_outline,
+                              color: Theme.of(context).colorScheme.error,
+                            ),
                             const SizedBox(width: 12),
                             Expanded(
                               child: Text(
                                 _errorMessage!,
-                                style: TextStyle(color: Colors.red.shade700),
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.error,
+                                ),
                               ),
                             ),
                           ],
@@ -247,9 +253,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  'Display Name',
-                                  style: TextStyle(
+                                Text(
+                                  context.l10n.displayName,
+                                  style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -273,9 +279,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 children: [
                                   TextField(
                                     controller: _displayNameController,
-                                    decoration: const InputDecoration(
-                                      hintText: 'Enter display name',
-                                      border: OutlineInputBorder(),
+                                    decoration: InputDecoration(
+                                      hintText: context.l10n.editDisplayName,
+                                      border: const OutlineInputBorder(),
                                     ),
                                   ),
                                   const SizedBox(height: 12),
@@ -289,12 +295,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             _errorMessage = null;
                                           });
                                         },
-                                        child: const Text('Cancel'),
+                                        child: Text(context.l10n.cancel),
                                       ),
                                       const SizedBox(width: 8),
                                       ElevatedButton(
                                         onPressed: _saveDisplayName,
-                                        child: const Text('Save'),
+                                        child: Text(context.l10n.save),
                                       ),
                                     ],
                                   ),
@@ -318,26 +324,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'Account Information',
-                              style: TextStyle(
+                            Text(
+                              context.l10n.accountInformation,
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             const SizedBox(height: 16),
                             _buildInfoRow(
-                              'Email',
+                              context.l10n.email,
                               _currentUser!.email,
                               Icons.email,
                             ),
                             const Divider(height: 24),
                             _buildInfoRow(
-                              'Email Verified',
+                              context.l10n.emailVerified,
                               _currentUser!.emailVerified ? 'Yes' : 'No',
                               _currentUser!.emailVerified ? Icons.verified : Icons.warning,
-                              valueColor:
-                                  _currentUser!.emailVerified ? Colors.green : Colors.orange,
+                              valueColor: _currentUser!.emailVerified
+                                  ? Theme.of(context).primaryColor
+                                  : Theme.of(context).colorScheme.error,
                             ),
                             const Divider(height: 24),
                             _buildInfoRow(
@@ -347,7 +354,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             const Divider(height: 24),
                             _buildInfoRow(
-                              'Member Since',
+                              context.l10n.memberSince,
                               _formatDate(_currentUser!.createdAt),
                               Icons.calendar_today,
                             ),
@@ -361,7 +368,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ElevatedButton.icon(
                       onPressed: _navigateToAccountSettings,
                       icon: const Icon(Icons.settings),
-                      label: const Text('Account Settings'),
+                      label: Text(context.l10n.accountSettings),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.all(16),
                       ),
@@ -376,7 +383,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildInfoRow(String label, String value, IconData icon, {Color? valueColor}) {
     return Row(
       children: [
-        Icon(icon, size: 20, color: Colors.grey[600]),
+        Icon(icon, size: 20, color: Theme.of(context).primaryColor.withOpacity(0.7)),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
@@ -384,18 +391,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Text(
                 label,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
+                style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 4),
               Text(
                 value,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: valueColor,
-                ),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: valueColor,
+                    ),
               ),
             ],
           ),

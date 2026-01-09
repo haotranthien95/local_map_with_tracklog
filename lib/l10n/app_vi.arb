@@ -1,0 +1,160 @@
+{
+  "@@locale": "vi",
+  "appTitle": "Bản đồ cá nhân & Tracklog",
+  
+  "login": "Đăng nhập",
+  "register": "Tạo tài khoản",
+  "email": "Email",
+  "password": "Mật khẩu",
+  "confirmPassword": "Xác nhận mật khẩu",
+  "home": "Trang chủ",
+  "settings": "Cài đặt",
+  "profile": "Hồ sơ",
+  "logout": "Đăng xuất",
+  "account": "Tài khoản",
+  "deleteAccount": "Xóa tài khoản",
+  "language": "Ngôn ngữ",
+  "theme": "Giao diện",
+  "light": "Sáng",
+  "dark": "Tối",
+  "system": "Hệ thống",
+  "confirm": "Xác nhận",
+  "cancel": "Hủy",
+  "save": "Lưu",
+  "retry": "Thử lại",
+  "notifications": "Thông báo",
+  "map": "Bản đồ",
+  "error": "Lỗi",
+  "success": "Thành công",
+  
+  "welcomeBack": "Chào mừng trở lại",
+  "signInToContinue": "Đăng nhập để tiếp tục",
+  "forgotPassword": "Quên mật khẩu?",
+  "dontHaveAccount": "Chưa có tài khoản?",
+  "signIn": "Đăng nhập",
+  "or": "HOẶC",
+  "continueWithGoogle": "Tiếp tục với Google",
+  "continueWithApple": "Tiếp tục với Apple",
+  
+  "welcome": "Chào mừng!",
+  "createAccountToSave": "Tạo tài khoản để lưu lại hành trình của bạn",
+  "alreadyHaveAccount": "Đã có tài khoản?",
+  "passwordRequirements": "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số",
+  
+  "storageWarning": "Cảnh báo dung lượng",
+  "storageWarningMessage": "Bộ nhớ đệm bản đồ đang chiếm nhiều dung lượng. Bạn có muốn xóa bớt dữ liệu cũ để giải phóng bộ nhớ?",
+  "clearCache": "Xóa bộ nhớ đệm",
+  "notNow": "Để sau",
+  "cacheCleared": "Đã xóa bộ nhớ đệm thành công",
+  
+  "importTrack": "Nhập hành trình",
+  "centerOnLocation": "Vị trí hiện tại",
+  "toNorth": "Hướng Bắc",
+  
+  "anonymousUser": "Người dùng ẩn danh",
+  "noUserSignedIn": "Chưa đăng nhập",
+  "editDisplayName": "Sửa tên hiển thị",
+  "displayName": "Tên hiển thị",
+  "accountInformation": "Thông tin tài khoản",
+  "memberSince": "Thành viên từ",
+  "emailVerified": "Đã xác thực Email",
+  "accountSettings": "Cài đặt tài khoản",
+  
+  "deleteAccountConfirm": "Xóa tài khoản?",
+  "deletionWarning": "Hành động này không thể hoàn tác!",
+  "deletionItems": "Xóa tài khoản sẽ:",
+  "deletionPermanentlyRemove": "Xóa vĩnh viễn tất cả dữ liệu tài khoản",
+  "deletionDeleteTracks": "Xóa tất cả các hành trình đã lưu",
+  "deletionCancelSessions": "Hủy tất cả các phiên đăng nhập",
+  "deletionRemoveProfile": "Gỡ bỏ thông tin hồ sơ của bạn",
+  "enterPasswordToConfirm": "Nhập mật khẩu để xác nhận:",
+  
+  "loading": "Đang tải...",
+  "verifying": "Đang xác thực...",
+  "updating": "Đang cập nhật...",
+  "locationPermissionDenied": "Quyền truy cập vị trí bị từ chối",
+  "couldNotLoadTracklogs": "Không thể tải các tệp hành trình đã lưu",
+  "trackImportedSuccessfully": "Hành trình \"{name}\" đã được nhập thành công",
+  "@trackImportedSuccessfully": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "importingTrack": "Đang nhập hành trình...",
+  "failedToImportTrack": "Nhập hành trình thất bại: {error}",
+  "@failedToImportTrack": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "failedToUpdateTracklog": "Cập nhật hành trình thất bại: {error}",
+  "@failedToUpdateTracklog": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "failedToDeleteTracklog": "Xóa hành trình thất bại: {error}",
+  "@failedToDeleteTracklog": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cacheStorageInfo": "Thông tin bộ nhớ đệm",
+  "totalSize": "Tổng kích thước",
+  "tileCount": "Số lượng mảnh bản đồ",
+  "storageUsage": "Dung lượng đã sử dụng",
+  "storageWarningThresholdReached": "Đã đạt đến ngưỡng cảnh báo bộ nhớ",
+  "storageUsageNormal": "Mức sử dụng bộ nhớ bình thường",
+  "close": "Đóng",
+  "undo": "Hoàn tác",
+  "tracklogs": "Hành trình",
+  "noTracklogsAdded": "Chưa có hành trình nào được thêm",
+  "imported": "Đã nhập",
+  "hide": "Ẩn",
+  "show": "Hiện",
+  "rename": "Đổi tên",
+  "changeColor": "Thay đổi màu sắc",
+  "remove": "Gỡ bỏ",
+  "renameTracklog": "Đổi tên hành trình",
+  "isVisibleNow": "{name} hiện đang hiển thị",
+  "@isVisibleNow": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "isHiddenNow": "{name} hiện đang bị ẩn",
+  "@isHiddenNow": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "nameTracklog": "Đặt tên hành trình",
+  "name": "Tên",
+  "enterTracklogName": "Nhập tên hành trình",
+  "nameCannotBeEmpty": "Tên không được để trống",
+  "ok": "Đồng ý",
+  "chooseColor": "Chọn màu sắc",
+  "addMarker": "Thêm đánh dấu",
+  "addMarkerQuestion": "Thêm đánh dấu?",
+  "addMarkerAtLocation": "Thêm đánh dấu tại vị trí này?",
+  "chooseIcon": "Chọn biểu tượng",
+  "nameMarker": "Đặt tên đánh dấu",
+  "next": "Tiếp theo",
+  "back": "Quay lại",
+  "create": "Tạo",
+  "markerName": "Tên đánh dấu",
+  "enterName": "Nhập tên",
+  "markerStepInstruction": "Bạn có thể chọn biểu tượng, màu sắc và tên trong các bước tiếp theo."
+}
