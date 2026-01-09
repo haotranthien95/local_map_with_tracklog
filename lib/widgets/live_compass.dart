@@ -33,7 +33,7 @@ class LiveCompass extends StatelessWidget {
 
           return _buildContainer(
             child: Transform.rotate(
-              angle: -heading * math.pi / 180,
+              angle: heading * math.pi / 180,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -62,7 +62,7 @@ class LiveCompass extends StatelessWidget {
                     height: size * 0.4,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: isActive ? Colors.blue : Colors.grey,
+                      color: isActive ? Theme.of(context).primaryColor : Colors.grey,
                       border: Border.all(
                         color: Colors.white,
                         width: 2,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
-
+import '../../../l10n/l10n_extension.dart';
 import 'package:local_map_with_tracklog/features/map/models/marker.dart';
 import 'package:local_map_with_tracklog/features/map/models/marker_style.dart';
 
@@ -103,12 +103,12 @@ class _MarkerStepperState extends State<_MarkerStepper> {
                 if (_step > 0)
                   TextButton(
                     onPressed: () => setState(() => _step -= 1),
-                    child: const Text('Back'),
+                    child: Text(context.l10n.back),
                   ),
                 const Spacer(),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Cancel'),
+                  child: Text(context.l10n.cancel),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
@@ -149,16 +149,16 @@ class _MarkerStepperState extends State<_MarkerStepper> {
   }
 
   String _titleForStep() {
-    if (_step == 0) return 'Add marker?';
-    if (_step == 1) return 'Choose icon';
-    if (_step == 2) return 'Choose color';
-    return 'Name marker';
+    if (_step == 0) return context.l10n.addMarkerQuestion;
+    if (_step == 1) return context.l10n.chooseIcon;
+    if (_step == 2) return context.l10n.chooseColor;
+    return context.l10n.nameMarker;
   }
 
   String _primaryLabel() {
-    if (_step == 0) return 'Add marker';
-    if (_step < 3) return 'Next';
-    return 'Create';
+    if (_step == 0) return context.l10n.addMarker;
+    if (_step < 3) return context.l10n.next;
+    return context.l10n.create;
   }
 
   bool _primaryEnabled() {
@@ -203,7 +203,7 @@ class _EntryStep extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Add a marker at this location?',
+          context.l10n.addMarkerAtLocation,
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 8),
@@ -212,7 +212,7 @@ class _EntryStep extends StatelessWidget {
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 12),
-        const Text('You can choose an icon, a color, and a name in the next steps.'),
+        Text(context.l10n.markerStepInstruction),
       ],
     );
   }
@@ -318,9 +318,9 @@ class _NameStep extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       autofocus: true,
-      decoration: const InputDecoration(
-        labelText: 'Marker name',
-        hintText: 'Enter a name',
+      decoration: InputDecoration(
+        labelText: context.l10n.markerName,
+        hintText: context.l10n.enterName,
       ),
       controller: controller,
       onChanged: onChanged,

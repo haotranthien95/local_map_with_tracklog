@@ -7,6 +7,7 @@ import '../widgets/auth_text_field.dart';
 import '../widgets/auth_button.dart';
 import '../widgets/social_login_buttons.dart';
 import '../widgets/loading_overlay.dart';
+import 'package:local_map_with_tracklog/l10n/l10n_extension.dart';
 
 /// T060: Login screen with email/password and social login
 class LoginScreen extends StatefulWidget {
@@ -255,16 +256,16 @@ class _LoginScreenState extends State<LoginScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Password reset email sent to $email'),
-            backgroundColor: Colors.green,
+            backgroundColor: Theme.of(context).primaryColor,
           ),
         );
       } catch (e) {
         if (!mounted) return;
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to send reset email'),
-            backgroundColor: Colors.red,
+          SnackBar(
+            content: const Text('Failed to send reset email'),
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -286,9 +287,9 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             Text('Please verify your email address: $email'),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               'Check your inbox for the verification link.',
-              style: TextStyle(fontSize: 14, color: Colors.grey),
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
         ),
@@ -307,9 +308,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 if (!mounted) return;
 
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Verification email sent'),
-                    backgroundColor: Colors.green,
+                  SnackBar(
+                    content: const Text('Verification email sent'),
+                    backgroundColor: Theme.of(context).primaryColor,
                   ),
                 );
                 Navigator.of(context).pop();
@@ -318,9 +319,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 if (!mounted) return;
 
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Failed to send verification email'),
-                    backgroundColor: Colors.red,
+                  SnackBar(
+                    content: const Text('Failed to send verification email'),
+                    backgroundColor: Theme.of(context).colorScheme.error,
                   ),
                 );
               }
@@ -349,12 +350,12 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sign In'),
+        title: Text(context.l10n.signIn),
         centerTitle: true,
       ),
       body: LoadingOverlay(
         isLoading: _isLoading,
-        message: 'Signing in...',
+        message: context.l10n.loading,
         child: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24.0),
@@ -366,27 +367,25 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 32),
 
                   // Logo or app name
-                  const Icon(
+                  Icon(
                     Icons.map,
                     size: 80,
-                    color: Colors.blue,
+                    color: Theme.of(context).primaryColor,
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'Welcome Back',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Text(
+                    context.l10n.welcomeBack,
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'Sign in to continue',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
+                  Text(
+                    context.l10n.signInToContinue,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: Theme.of(context).textTheme.bodySmall?.color,
+                        ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 48),
@@ -397,18 +396,25 @@ class _LoginScreenState extends State<LoginScreen> {
                       padding: const EdgeInsets.all(12),
                       margin: const EdgeInsets.only(bottom: 16),
                       decoration: BoxDecoration(
-                        color: Colors.red.shade50,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.red.shade200),
+                        color: Theme.of(context).colorScheme.errorContainer,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.error.withOpacity(0.2),
+                        ),
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.error_outline, color: Colors.red.shade700),
+                          Icon(
+                            Icons.error_outline,
+                            color: Theme.of(context).colorScheme.error,
+                          ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
                               _errorMessage!,
-                              style: TextStyle(color: Colors.red.shade700),
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
                             ),
                           ),
                         ],
@@ -418,8 +424,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Email field
                   AuthTextField(
                     controller: _emailController,
-                    label: 'Email',
-                    hint: 'Enter your email',
+                    label: context.l10n.email,
+                    hint: context.l10n.email,
                     keyboardType: TextInputType.emailAddress,
                     prefixIcon: const Icon(Icons.email),
                     validator: (value) {
@@ -434,8 +440,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Password field
                   AuthTextField(
                     controller: _passwordController,
-                    label: 'Password',
-                    hint: 'Enter your password',
+                    label: context.l10n.password,
+                    hint: context.l10n.password,
                     obscureText: _obscurePassword,
                     prefixIcon: const Icon(Icons.lock),
                     suffixIcon: IconButton(
@@ -462,34 +468,33 @@ class _LoginScreenState extends State<LoginScreen> {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: _showForgotPasswordDialog,
-                      child: const Text('Forgot Password?'),
+                      child: Text(context.l10n.forgotPassword),
                     ),
                   ),
                   const SizedBox(height: 24),
 
                   // Sign in button
                   AuthButton(
-                    text: 'Sign In',
+                    text: context.l10n.signIn,
                     onPressed: _handleEmailPasswordLogin,
                     icon: const Icon(Icons.login),
                   ),
                   const SizedBox(height: 24),
 
                   // Divider
-                  const Row(
+                  Row(
                     children: [
-                      Expanded(child: Divider()),
+                      const Expanded(child: Divider()),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
-                          'OR',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          context.l10n.or,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
                       ),
-                      Expanded(child: Divider()),
+                      const Expanded(child: Divider()),
                     ],
                   ),
                   const SizedBox(height: 24),
@@ -506,18 +511,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        'Don\'t have an account? ',
-                        style: TextStyle(fontSize: 16),
+                      Text(
+                        context.l10n.dontHaveAccount + ' ',
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       TextButton(
                         onPressed: _navigateToRegister,
-                        child: const Text(
-                          'Create Account',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        child: Text(
+                          context.l10n.register,
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
                       ),
                     ],

@@ -1,0 +1,160 @@
+{
+  "@@locale": "ja",
+  "appTitle": "ローカルマップとトラックログ",
+  
+  "login": "ログイン",
+  "register": "アカウント作成",
+  "email": "メールアドレス",
+  "password": "パスワード",
+  "confirmPassword": "パスワード再入力",
+  "home": "ホーム",
+  "settings": "設定",
+  "profile": "プロフィール",
+  "logout": "ログアウト",
+  "account": "アカウント",
+  "deleteAccount": "アカウント削除",
+  "language": "言語",
+  "theme": "テーマ",
+  "light": "ライト",
+  "dark": "ダーク",
+  "system": "システム設定",
+  "confirm": "確認",
+  "cancel": "キャンセル",
+  "save": "保存",
+  "retry": "再試行",
+  "notifications": "通知",
+  "map": "マップ",
+  "error": "エラー",
+  "success": "成功",
+  
+  "welcomeBack": "おかえりなさい",
+  "signInToContinue": "ログインして続行してください",
+  "forgotPassword": "パスワードを忘れた場合",
+  "dontHaveAccount": "アカウントをお持ちでない場合",
+  "signIn": "ログイン",
+  "or": "または",
+  "continueWithGoogle": "Googleで続行",
+  "continueWithApple": "Appleで続行",
+  
+  "welcome": "ようこそ！",
+  "createAccountToSave": "アカウントを作成してトラックログを保存しましょう",
+  "alreadyHaveAccount": "既にアカウントをお持ちですか？",
+  "passwordRequirements": "パスワードは、大文字、小文字、数字を含む8文字以上である必要があります",
+  
+  "storageWarning": "ストレージ警告",
+  "storageWarningMessage": "マップのキャッシュが大量のストレージを消費しています。古いデータを削除して空き容量を増やしますか？",
+  "clearCache": "キャッシュをクリア",
+  "notNow": "あとで",
+  "cacheCleared": "キャッシュが正常にクリアされました",
+  
+  "importTrack": "トラックをインポート",
+  "centerOnLocation": "現在地に移動",
+  "toNorth": "北を上にする",
+  
+  "anonymousUser": "匿名ユーザー",
+  "noUserSignedIn": "ユーザーがログインしていません",
+  "editDisplayName": "表示名を編集",
+  "displayName": "表示名",
+  "accountInformation": "アカウント情報",
+  "memberSince": "登録日",
+  "emailVerified": "メール認証済み",
+  "accountSettings": "アカウント設定",
+  
+  "deleteAccountConfirm": "アカウントを削除しますか？",
+  "deletionWarning": "この操作は取り消せません！",
+  "deletionItems": "アカウントを削除すると：",
+  "deletionPermanentlyRemove": "すべてのアカウントデータが完全に削除されます",
+  "deletionDeleteTracks": "保存されたすべてのトラックログが削除されます",
+  "deletionCancelSessions": "進行中のセッションがすべて解除されます",
+  "deletionRemoveProfile": "プロフィール情報が削除されます",
+  "enterPasswordToConfirm": "確認のためパスワードを入力してください：",
+  
+  "loading": "読み込み中...",
+  "verifying": "確認中...",
+  "updating": "更新中...",
+  "locationPermissionDenied": "位置情報の権限が拒否されました",
+  "couldNotLoadTracklogs": "保存されたトラックログを読み込めませんでした",
+  "trackImportedSuccessfully": "トラック \"{name}\" が正常にインポートされました",
+  "@trackImportedSuccessfully": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "importingTrack": "トラックをインポート中...",
+  "failedToImportTrack": "トラックのインポートに失敗しました: {error}",
+  "@failedToImportTrack": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "failedToUpdateTracklog": "トラックログの更新に失敗しました: {error}",
+  "@failedToUpdateTracklog": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "failedToDeleteTracklog": "トラックログの削除に失敗しました: {error}",
+  "@failedToDeleteTracklog": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cacheStorageInfo": "キャッシュストレージ情報",
+  "totalSize": "合計サイズ",
+  "tileCount": "タイル数",
+  "storageUsage": "ストレージ使用状況",
+  "storageWarningThresholdReached": "ストレージ警告のしきい値に達しました",
+  "storageUsageNormal": "ストレージ使用状況は正常です",
+  "close": "閉じる",
+  "undo": "元に戻す",
+  "tracklogs": "トラックログ",
+  "noTracklogsAdded": "トラックログはまだ追加されていません",
+  "imported": "インポート済み",
+  "hide": "非表示",
+  "show": "表示",
+  "rename": "名前の変更",
+  "changeColor": "色の変更",
+  "remove": "削除",
+  "renameTracklog": "トラックログの名前を変更",
+  "isVisibleNow": "{name} が表示されました",
+  "@isVisibleNow": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "isHiddenNow": "{name} が非表示になりました",
+  "@isHiddenNow": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "nameTracklog": "トラックログに名前を付ける",
+  "name": "名前",
+  "enterTracklogName": "トラックログの名前を入力してください",
+  "nameCannotBeEmpty": "名前は空にできません",
+  "ok": "OK",
+  "chooseColor": "色を選択",
+  "addMarker": "マーカーを追加",
+  "addMarkerQuestion": "マーカーを追加しますか？",
+  "addMarkerAtLocation": "この位置にマーカーを追加しますか？",
+  "chooseIcon": "アイコンを選択",
+  "nameMarker": "マーカーの名前",
+  "next": "次へ",
+  "back": "戻る",
+  "create": "作成",
+  "markerName": "マーカー名",
+  "enterName": "名前を入力",
+  "markerStepInstruction": "次のステップでアイコン、色、名前を選択できます。"
+}

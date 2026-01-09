@@ -145,9 +145,9 @@ class MapViewState extends State<MapView> {
                     height: 40,
                     child: LiveCompass(
                       size: 40,
-                      backgroundColor: Colors.blue.withOpacity(0.2),
+                      backgroundColor: Theme.of(context).primaryColor.withOpacity(0.2),
                       ringColor: Colors.transparent,
-                      northColor: Colors.red.shade400,
+                      northColor: Theme.of(context).colorScheme.error,
                       textColor: Colors.white70,
                       isActive: widget.deviceLocation?.isActive ?? false,
                     ),
@@ -167,8 +167,11 @@ class MapViewState extends State<MapView> {
             bottom: 8,
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.7),
-                borderRadius: BorderRadius.circular(4),
+                color: Theme.of(context).colorScheme.surface.withOpacity(0.8),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: Theme.of(context).dividerColor.withOpacity(0.1),
+                ),
               ),
               padding: const EdgeInsets.all(8),
               child: Text(
@@ -176,11 +179,10 @@ class MapViewState extends State<MapView> {
                 'Zoom: ${_currentZoom.toStringAsFixed(1)}\n'
                 'Lat: ${_currentCenter.latitude.toStringAsFixed(4)}°\n'
                 'Lng: ${_currentCenter.longitude.toStringAsFixed(4)}°',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 10,
-                  fontFamily: 'monospace',
-                ),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontSize: 10,
+                      fontFamily: 'monospace',
+                    ),
               ),
             ),
           ),

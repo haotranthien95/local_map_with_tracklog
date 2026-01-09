@@ -36,7 +36,6 @@ Dart 3.5.4+ / Flutter 3.5.4+ (SDK constraint from pubspec.yaml): Follow standard
 ## Recent Changes
 - 004-delete-account-nopass: Added Dart 3.5.4+, Flutter 3.5.4
 - 001-add-map-marker: Added Dart 3.5.4 (Flutter SDK 3.5.4+) + flutter_map (map rendering/gestures), latlong2 (coords), shared_preferences (local persistence), flutter_colorpicker (color selection UI)
-- 003-firebase-user-auth: Added Flutter 3.5.4+, Dart 3.5.4+ + firebase_core, firebase_auth, google_sign_in, sign_in_with_apple
 
 
 <!-- MANUAL ADDITIONS START -->

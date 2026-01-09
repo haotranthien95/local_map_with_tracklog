@@ -54,7 +54,6 @@ class _DeleteAccountFlowState extends State<DeleteAccountFlow> {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: const Text('Delete Account?'),
-        backgroundColor: Colors.red.shade50,
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,20 +61,25 @@ class _DeleteAccountFlowState extends State<DeleteAccountFlow> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.red.shade100,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.red.shade300),
+                color: Theme.of(context).colorScheme.errorContainer,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.error.withOpacity(0.2),
+                ),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.warning, color: Colors.red.shade700),
+                  Icon(
+                    Icons.warning,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       'This cannot be undone!',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.red.shade700,
+                        color: Theme.of(context).colorScheme.error,
                       ),
                     ),
                   ),
@@ -83,20 +87,24 @@ class _DeleteAccountFlowState extends State<DeleteAccountFlow> {
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'Deleting your account will:',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 8),
             Text('• Permanently remove all your account data',
-                style: TextStyle(color: Colors.grey[700])),
-            Text('• Delete all your saved tracklogs', style: TextStyle(color: Colors.grey[700])),
-            Text('• Cancel any active sessions', style: TextStyle(color: Colors.grey[700])),
-            Text('• Remove your profile information', style: TextStyle(color: Colors.grey[700])),
+                style: Theme.of(context).textTheme.bodySmall),
+            Text('• Delete all your saved tracklogs', style: Theme.of(context).textTheme.bodySmall),
+            Text('• Cancel any active sessions', style: Theme.of(context).textTheme.bodySmall),
+            Text('• Remove your profile information', style: Theme.of(context).textTheme.bodySmall),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'To confirm, enter your password:',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 12),
             Form(
@@ -123,17 +131,15 @@ class _DeleteAccountFlowState extends State<DeleteAccountFlow> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
             ),
             onPressed: () {
               if (formKey.currentState!.validate()) {
                 Navigator.of(context).pop(true);
               }
             },
-            child: const Text(
-              'Delete Account',
-              style: TextStyle(color: Colors.white),
-            ),
+            child: const Text('Delete Account'),
           ),
         ],
       ),
@@ -276,7 +282,7 @@ class _DeleteAccountFlowState extends State<DeleteAccountFlow> {
         Text(
           'This may take a moment',
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey,
+                color: Theme.of(context).textTheme.bodySmall?.color,
               ),
         ),
       ],

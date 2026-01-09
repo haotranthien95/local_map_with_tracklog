@@ -9,6 +9,7 @@ import '../widgets/auth_text_field.dart';
 import '../widgets/auth_button.dart';
 import '../widgets/social_login_buttons.dart';
 import '../widgets/loading_overlay.dart';
+import 'package:local_map_with_tracklog/l10n/l10n_extension.dart';
 
 /// Registration screen for creating new user accounts
 class RegisterScreen extends StatefulWidget {
@@ -196,7 +197,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.green,
+        backgroundColor: Theme.of(context).primaryColor,
         duration: const Duration(seconds: 2),
       ),
     );
@@ -206,11 +207,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Account'),
+        title: Text(context.l10n.register),
       ),
       body: LoadingOverlay(
         isLoading: _isLoading,
-        message: 'Creating your account...',
+        message: context.l10n.loading,
         child: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24.0),
@@ -223,7 +224,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   // Title
                   Text(
-                    'Welcome!',
+                    context.l10n.welcome,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -231,9 +232,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Create an account to save your tracklogs',
+                    context.l10n.createAccountToSave,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Colors.grey[600],
+                          color: Theme.of(context).textTheme.bodySmall?.color,
                         ),
                     textAlign: TextAlign.center,
                   ),
@@ -245,18 +246,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       padding: const EdgeInsets.all(12),
                       margin: const EdgeInsets.only(bottom: 16),
                       decoration: BoxDecoration(
-                        color: Colors.red[50],
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.red[200]!),
+                        color: Theme.of(context).colorScheme.errorContainer,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.error.withOpacity(0.2),
+                        ),
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.error_outline, color: Colors.red[700]),
+                          Icon(
+                            Icons.error_outline,
+                            color: Theme.of(context).colorScheme.error,
+                          ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
                               _errorMessage!,
-                              style: TextStyle(color: Colors.red[700]),
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
                             ),
                           ),
                         ],
@@ -265,8 +273,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   // Email field with validation
                   AuthTextField(
-                    label: 'Email',
-                    hint: 'Enter your email',
+                    label: context.l10n.email,
+                    hint: context.l10n.email,
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     prefixIcon: const Icon(Icons.email_outlined),
@@ -276,8 +284,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   // Password field with validation
                   AuthTextField(
-                    label: 'Password',
-                    hint: 'Enter your password',
+                    label: context.l10n.password,
+                    hint: context.l10n.password,
                     controller: _passwordController,
                     obscureText: _obscurePassword,
                     prefixIcon: const Icon(Icons.lock_outlined),
@@ -299,8 +307,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   // Confirm password field
                   AuthTextField(
-                    label: 'Confirm Password',
-                    hint: 'Re-enter your password',
+                    label: context.l10n.confirmPassword,
+                    hint: context.l10n.confirmPassword,
                     controller: _confirmPasswordController,
                     obscureText: _obscureConfirmPassword,
                     prefixIcon: const Icon(Icons.lock_outlined),
@@ -327,16 +335,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   // Password requirements
                   Text(
-                    'Password must be at least 8 characters with uppercase, lowercase, and number',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.grey[600],
-                        ),
+                    context.l10n.passwordRequirements,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                   const SizedBox(height: 24),
 
                   // Register button
                   AuthButton(
-                    text: 'Create Account',
+                    text: context.l10n.register,
                     onPressed: _handleEmailPasswordRegister,
                     isLoading: _isLoading,
                   ),
@@ -345,15 +351,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   // Divider
                   Row(
                     children: [
-                      Expanded(child: Divider(color: Colors.grey[300])),
+                      const Expanded(child: Divider()),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
-                          'OR',
-                          style: TextStyle(color: Colors.grey[600]),
+                          context.l10n.or,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
                       ),
-                      Expanded(child: Divider(color: Colors.grey[300])),
+                      const Expanded(child: Divider()),
                     ],
                   ),
                   const SizedBox(height: 24),
@@ -369,9 +377,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   // Age restriction notice (T113)
                   Text(
                     AuthConstants.ageRestrictionMessage,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.grey[600],
-                        ),
+                    style: Theme.of(context).textTheme.bodySmall,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
@@ -380,12 +386,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('Already have an account?'),
+                      Text(
+                        context.l10n.alreadyHaveAccount + ' ',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
                       TextButton(
                         onPressed: () {
                           Navigator.of(context).pushReplacementNamed('/login');
                         },
-                        child: const Text('Sign In'),
+                        child: Text(
+                          context.l10n.signIn,
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
                       ),
                     ],
                   ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'dart:async';
+import '../l10n/l10n_extension.dart';
 import '../models/map_style.dart';
 import '../models/track.dart' as model;
 import '../models/tracklog_metadata.dart';
@@ -52,9 +53,9 @@ class _MapScreenState extends State<MapScreen> {
     if (!hasPermission) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Location permission denied'),
-            duration: Duration(seconds: 2),
+          SnackBar(
+            content: Text(context.l10n.locationPermissionDenied),
+            duration: const Duration(seconds: 2),
           ),
         );
       }
@@ -101,9 +102,9 @@ class _MapScreenState extends State<MapScreen> {
       // Show user-friendly error message
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Could not load saved tracklogs'),
-            backgroundColor: Colors.orange,
+          SnackBar(
+            content: Text(context.l10n.couldNotLoadTracklogs),
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -132,22 +133,19 @@ class _MapScreenState extends State<MapScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Storage Warning'),
-        content: const Text(
-          'Your map cache is using a significant amount of storage space (≥80% threshold). '
-          'Would you like to clear some old tiles to free up space?',
-        ),
+        title: Text(context.l10n.storageWarning),
+        content: Text(context.l10n.storageWarningMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Not Now'),
+            child: Text(context.l10n.notNow),
           ),
           TextButton(
             onPressed: () async {
               Navigator.of(context).pop();
               await _clearCache();
             },
-            child: const Text('Clear Cache'),
+            child: Text(context.l10n.clearCache),
           ),
         ],
       ),
@@ -158,7 +156,7 @@ class _MapScreenState extends State<MapScreen> {
     await _cacheService.clearCache();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Cache cleared successfully')),
+        SnackBar(content: Text(context.l10n.cacheCleared)),
       );
       setState(() {
         _hasCheckedStorageWarning = false;
@@ -170,7 +168,7 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Local Map with Track Log'),
+        title: Text(context.l10n.appTitle),
         actions: [
           // Tracklog list button
           IconButton(
@@ -294,7 +292,7 @@ class _MapScreenState extends State<MapScreen> {
       // Show loading indicator
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Importing track...')),
+        SnackBar(content: Text(context.l10n.importingTrack)),
       );
 
       // Parse the track file
@@ -329,9 +327,9 @@ class _MapScreenState extends State<MapScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Track "$name" imported successfully'),
+          content: Text(context.l10n.trackImportedSuccessfully(name)),
           action: SnackBarAction(
-            label: 'Undo',
+            label: context.l10n.undo,
             onPressed: () {
               setState(() {
                 _tracks.remove(namedTrack);
@@ -345,8 +343,8 @@ class _MapScreenState extends State<MapScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to import track: $e'),
-          backgroundColor: Colors.red,
+          content: Text(context.l10n.failedToImportTrack(e.toString())),
+          backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
     }
@@ -396,8 +394,8 @@ class _MapScreenState extends State<MapScreen> {
               if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Failed to update tracklog: $e'),
-                    backgroundColor: Colors.red,
+                    content: Text(context.l10n.failedToUpdateTracklog(e.toString())),
+                    backgroundColor: Theme.of(context).colorScheme.error,
                   ),
                 );
               }
@@ -418,8 +416,8 @@ class _MapScreenState extends State<MapScreen> {
               if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Failed to delete tracklog: $e'),
-                    backgroundColor: Colors.red,
+                    content: Text(context.l10n.failedToDeleteTracklog(e.toString())),
+                    backgroundColor: Theme.of(context).colorScheme.error,
                   ),
                 );
               }
@@ -455,22 +453,22 @@ class _MapScreenState extends State<MapScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Cache Storage Info'),
+        title: Text(context.l10n.cacheStorageInfo),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Total Size: ${cacheInfo.totalSizeMB.toStringAsFixed(2)} MB'),
-            Text('Tile Count: ${cacheInfo.tileCount}'),
+            Text('${context.l10n.totalSize}: ${cacheInfo.totalSizeMB.toStringAsFixed(2)} MB'),
+            Text('${context.l10n.tileCount}: ${cacheInfo.tileCount}'),
             if (cacheInfo.storageUsagePercent != null)
               Text(
-                'Storage Usage: ${cacheInfo.storageUsagePercent!.toStringAsFixed(1)}%',
+                '${context.l10n.storageUsage}: ${cacheInfo.storageUsagePercent!.toStringAsFixed(1)}%',
               ),
             const SizedBox(height: 16),
             Text(
               cacheInfo.shouldShowWarning
-                  ? '⚠️ Storage warning threshold reached'
-                  : '✓ Storage usage is normal',
+                  ? '⚠️ ${context.l10n.storageWarningThresholdReached}'
+                  : '✓ ${context.l10n.storageUsageNormal}',
               style: TextStyle(
                 color: cacheInfo.shouldShowWarning ? Colors.orange : Colors.green,
                 fontWeight: FontWeight.bold,
@@ -481,7 +479,7 @@ class _MapScreenState extends State<MapScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
+            child: Text(context.l10n.close),
           ),
           if (cacheInfo.tileCount > 0)
             TextButton(
@@ -489,7 +487,7 @@ class _MapScreenState extends State<MapScreen> {
                 Navigator.of(context).pop();
                 await _clearCache();
               },
-              child: const Text('Clear Cache'),
+              child: Text(context.l10n.clearCache),
             ),
         ],
       ),

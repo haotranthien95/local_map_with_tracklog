@@ -1,0 +1,163 @@
+{
+  "@@locale": "en",
+  "appTitle": "Local Map with Track Log",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  
+  "login": "Sign In",
+  "register": "Create Account",
+  "email": "Email",
+  "password": "Password",
+  "confirmPassword": "Confirm Password",
+  "home": "Home",
+  "settings": "Settings",
+  "profile": "Profile",
+  "logout": "Logout",
+  "account": "Account",
+  "deleteAccount": "Delete Account",
+  "language": "Language",
+  "theme": "Theme",
+  "light": "Light",
+  "dark": "Dark",
+  "system": "System",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "save": "Save",
+  "retry": "Retry",
+  "notifications": "Notifications",
+  "map": "Map",
+  "error": "Error",
+  "success": "Success",
+  
+  "welcomeBack": "Welcome Back",
+  "signInToContinue": "Sign in to continue",
+  "forgotPassword": "Forgot Password?",
+  "dontHaveAccount": "Don't have an account?",
+  "signIn": "Sign In",
+  "or": "OR",
+  "continueWithGoogle": "Continue with Google",
+  "continueWithApple": "Continue with Apple",
+  
+  "welcome": "Welcome!",
+  "createAccountToSave": "Create an account to save your tracklogs",
+  "alreadyHaveAccount": "Already have an account?",
+  "passwordRequirements": "Password must be at least 8 characters with uppercase, lowercase, and number",
+  
+  "storageWarning": "Storage Warning",
+  "storageWarningMessage": "Your map cache is using a significant amount of storage space. Would you like to clear some old tiles to free up space?",
+  "clearCache": "Clear Cache",
+  "notNow": "Not Now",
+  "cacheCleared": "Cache cleared successfully",
+  
+  "importTrack": "Import Track",
+  "centerOnLocation": "Center on Location",
+  "toNorth": "To North",
+  
+  "anonymousUser": "Anonymous User",
+  "noUserSignedIn": "No user signed in",
+  "editDisplayName": "Edit Display Name",
+  "displayName": "Display Name",
+  "accountInformation": "Account Information",
+  "memberSince": "Member Since",
+  "emailVerified": "Email Verified",
+  "accountSettings": "Account Settings",
+  
+  "deleteAccountConfirm": "Delete Account?",
+  "deletionWarning": "This cannot be undone!",
+  "deletionItems": "Deleting your account will:",
+  "deletionPermanentlyRemove": "Permanently remove all your account data",
+  "deletionDeleteTracks": "Delete all your saved tracklogs",
+  "deletionCancelSessions": "Cancel any active sessions",
+  "deletionRemoveProfile": "Remove your profile information",
+  "enterPasswordToConfirm": "To confirm, enter your password:",
+  
+  "loading": "Loading...",
+  "verifying": "Verifying...",
+  "updating": "Updating...",
+  "locationPermissionDenied": "Location permission denied",
+  "couldNotLoadTracklogs": "Could not load saved tracklogs",
+  "trackImportedSuccessfully": "Track \"{name}\" imported successfully",
+  "@trackImportedSuccessfully": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "importingTrack": "Importing track...",
+  "failedToImportTrack": "Failed to import track: {error}",
+  "@failedToImportTrack": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "failedToUpdateTracklog": "Failed to update tracklog: {error}",
+  "@failedToUpdateTracklog": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "failedToDeleteTracklog": "Failed to delete tracklog: {error}",
+  "@failedToDeleteTracklog": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "cacheStorageInfo": "Cache Storage Info",
+  "totalSize": "Total Size",
+  "tileCount": "Tile Count",
+  "storageUsage": "Storage Usage",
+  "storageWarningThresholdReached": "Storage warning threshold reached",
+  "storageUsageNormal": "Storage usage is normal",
+  "close": "Close",
+  "undo": "Undo",
+  "tracklogs": "Tracklogs",
+  "noTracklogsAdded": "No tracklogs added yet",
+  "imported": "Imported",
+  "hide": "Hide",
+  "show": "Show",
+  "rename": "Rename",
+  "changeColor": "Change Color",
+  "remove": "Remove",
+  "renameTracklog": "Rename Tracklog",
+  "isVisibleNow": "{name} is now visible",
+  "@isVisibleNow": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "isHiddenNow": "{name} is now hidden",
+  "@isHiddenNow": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "nameTracklog": "Name Tracklog",
+  "name": "Name",
+  "enterTracklogName": "Enter tracklog name",
+  "nameCannotBeEmpty": "Name cannot be empty",
+  "ok": "OK",
+  "chooseColor": "Choose Color",
+  "addMarker": "Add marker",
+  "addMarkerQuestion": "Add marker?",
+  "addMarkerAtLocation": "Add a marker at this location?",
+  "chooseIcon": "Choose icon",
+  "nameMarker": "Name marker",
+  "next": "Next",
+  "back": "Back",
+  "create": "Create",
+  "markerName": "Marker name",
+  "enterName": "Enter a name",
+  "markerStepInstruction": "You can choose an icon, a color, and a name in the next steps."
+}
