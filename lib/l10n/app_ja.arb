@@ -13,6 +13,9 @@
   "logout": "ログアウト",
   "account": "アカウント",
   "deleteAccount": "アカウント削除",
+  "dangerZone": "危険ゾーン",
+  "deleteAccountSubtitle": "アカウントを完全に削除します",
+  "deleteAccountIrreversible": "この操作は元に戻せません。",
   "language": "言語",
   "theme": "テーマ",
   "light": "ライト",
@@ -55,10 +58,29 @@
   "noUserSignedIn": "ユーザーがログインしていません",
   "editDisplayName": "表示名を編集",
   "displayName": "表示名",
+  "displayNameUpdatedSuccessfully": "表示名を更新しました",
+  "connectionError": "接続エラー",
+  "unableToUpdateProfile": "プロフィールを更新できません。インターネット接続を確認してもう一度お試しください。",
   "accountInformation": "アカウント情報",
   "memberSince": "登録日",
   "emailVerified": "メール認証済み",
   "accountSettings": "アカウント設定",
+  "viewAndEditYourProfile": "プロフィールを表示・編集する",
+  "changeProfilePicture": "プロフィール写真を変更",
+  "privacyPolicy": "プライバシーポリシー",
+  "about": "このアプリについて",
+  "legal": "法的情報",
+  "openSettings": "設定を開く",
+  "logoutConfirmationTitle": "ログアウトしますか？",
+  "logoutConfirmationBody": "アカウントからサインアウトしますか？",
+  "logoutFailed": "ログアウトに失敗しました: {error}",
+  "@logoutFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   
   "deleteAccountConfirm": "アカウントを削除しますか？",
   "deletionWarning": "この操作は取り消せません！",
@@ -73,6 +95,10 @@
   "verifying": "確認中...",
   "updating": "更新中...",
   "locationPermissionDenied": "位置情報の権限が拒否されました",
+  "photoPickerCancelled": "写真が選択されていません。",
+  "photoPermissionDenied": "写真へのアクセスが拒否されました。",
+  "photoPickerFailed": "写真を選択できませんでした。もう一度お試しください。",
+  "couldNotOpenLink": "リンクを開けませんでした。",
   "couldNotLoadTracklogs": "保存されたトラックログを読み込めませんでした",
   "trackImportedSuccessfully": "トラック \"{name}\" が正常にインポートされました",
   "@trackImportedSuccessfully": {

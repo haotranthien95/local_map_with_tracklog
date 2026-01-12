@@ -1,6 +1,7 @@
 // T026-T029: AuthenticationService with Firebase Authentication integration
 
 import 'dart:async';
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -554,6 +555,9 @@ class AuthenticationService {
       );
     }
 
+    final userId = user.uid;
+    final userModel = User.fromFirebaseUser(user);
+
     try {
       // T029: Detect user type and route to appropriate auth method
       final isSocial = isSocialOnlyUser();
@@ -640,13 +644,16 @@ class AuthenticationService {
 
       // T014: Attempt deletion (may fail with requires-recent-login)
       try {
-        // T008: Cleanup local data with partial tolerance
-        await _cleanupLocalDataAfterDelete(user.uid);
-
         // Delete Firebase user account
         await user.delete();
 
-        return AuthResult.success(User.fromFirebaseUser(user));
+        // Sign out and clear tokens after deletion
+        await signOut();
+
+        // T008: Cleanup local data with partial tolerance (only after deletion succeeds)
+        await _cleanupLocalDataAfterDelete(userId);
+
+        return AuthResult.success(userModel);
       } on firebase_auth.FirebaseAuthException catch (e) {
         // T014: Auto-retry on requires-recent-login (shouldn't happen after reauth, but defensive)
         if (e.code == 'requires-recent-login') {
@@ -700,6 +707,27 @@ class AuthenticationService {
       await _clearUserProfile(userId);
     } catch (e) {
       print('User profile cleanup error (continuing): $e');
+    }
+
+    // Clear locally stored profile photo (not user-scoped)
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final existingPath = prefs.getString('profile_photo.localPath');
+      if (existingPath != null && existingPath.isNotEmpty) {
+        final file = File(existingPath);
+        if (await file.exists()) {
+          try {
+            await file.delete();
+          } catch (_) {
+            // Ignore delete failures; still clear prefs.
+          }
+        }
+      }
+
+      await prefs.remove('profile_photo.localPath');
+      await prefs.remove('profile_photo.updatedAt');
+    } catch (e) {
+      print('Profile photo cleanup error (continuing): $e');
     }
   }
 

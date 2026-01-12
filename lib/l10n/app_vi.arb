@@ -1,6 +1,6 @@
 {
   "@@locale": "vi",
-  "appTitle": "Bản đồ cá nhân & Tracklog",
+  "appTitle": "Khám phá",
   
   "login": "Đăng nhập",
   "register": "Tạo tài khoản",
@@ -13,6 +13,9 @@
   "logout": "Đăng xuất",
   "account": "Tài khoản",
   "deleteAccount": "Xóa tài khoản",
+  "dangerZone": "Vùng nguy hiểm",
+  "deleteAccountSubtitle": "Xóa vĩnh viễn tài khoản của bạn",
+  "deleteAccountIrreversible": "Hành động này không thể hoàn tác.",
   "language": "Ngôn ngữ",
   "theme": "Giao diện",
   "light": "Sáng",
@@ -55,10 +58,29 @@
   "noUserSignedIn": "Chưa đăng nhập",
   "editDisplayName": "Sửa tên hiển thị",
   "displayName": "Tên hiển thị",
+  "displayNameUpdatedSuccessfully": "Cập nhật tên hiển thị thành công",
+  "connectionError": "Lỗi kết nối",
+  "unableToUpdateProfile": "Không thể cập nhật hồ sơ. Vui lòng kiểm tra kết nối internet và thử lại.",
   "accountInformation": "Thông tin tài khoản",
   "memberSince": "Thành viên từ",
   "emailVerified": "Đã xác thực Email",
   "accountSettings": "Cài đặt tài khoản",
+  "viewAndEditYourProfile": "Xem và chỉnh sửa hồ sơ của bạn",
+  "changeProfilePicture": "Đổi ảnh đại diện",
+  "privacyPolicy": "Chính sách quyền riêng tư",
+  "about": "Giới thiệu",
+  "legal": "Pháp lý",
+  "openSettings": "Mở Cài đặt",
+  "logoutConfirmationTitle": "Đăng xuất?",
+  "logoutConfirmationBody": "Bạn có chắc chắn muốn đăng xuất khỏi tài khoản?",
+  "logoutFailed": "Đăng xuất thất bại: {error}",
+  "@logoutFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   
   "deleteAccountConfirm": "Xóa tài khoản?",
   "deletionWarning": "Hành động này không thể hoàn tác!",
@@ -73,6 +95,10 @@
   "verifying": "Đang xác thực...",
   "updating": "Đang cập nhật...",
   "locationPermissionDenied": "Quyền truy cập vị trí bị từ chối",
+  "photoPickerCancelled": "Chưa chọn ảnh.",
+  "photoPermissionDenied": "Quyền truy cập ảnh bị từ chối.",
+  "photoPickerFailed": "Không thể chọn ảnh. Vui lòng thử lại.",
+  "couldNotOpenLink": "Không thể mở liên kết.",
   "couldNotLoadTracklogs": "Không thể tải các tệp hành trình đã lưu",
   "trackImportedSuccessfully": "Hành trình \"{name}\" đã được nhập thành công",
   "@trackImportedSuccessfully": {

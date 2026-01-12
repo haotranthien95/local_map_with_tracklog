@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appTitle": "Local Map with Track Log",
+  "appTitle": "Explore",
   "@appTitle": {
     "description": "The title of the application"
   },
@@ -16,6 +16,9 @@
   "logout": "Logout",
   "account": "Account",
   "deleteAccount": "Delete Account",
+  "dangerZone": "Danger Zone",
+  "deleteAccountSubtitle": "Permanently delete your account",
+  "deleteAccountIrreversible": "This action is irreversible.",
   "language": "Language",
   "theme": "Theme",
   "light": "Light",
@@ -58,10 +61,29 @@
   "noUserSignedIn": "No user signed in",
   "editDisplayName": "Edit Display Name",
   "displayName": "Display Name",
+  "displayNameUpdatedSuccessfully": "Display name updated successfully",
+  "connectionError": "Connection Error",
+  "unableToUpdateProfile": "Unable to update profile. Please check your internet connection and try again.",
   "accountInformation": "Account Information",
   "memberSince": "Member Since",
   "emailVerified": "Email Verified",
   "accountSettings": "Account Settings",
+  "viewAndEditYourProfile": "View and edit your profile",
+  "changeProfilePicture": "Change profile picture",
+  "privacyPolicy": "Privacy Policy",
+  "about": "About",
+  "legal": "Legal",
+  "openSettings": "Open Settings",
+  "logoutConfirmationTitle": "Logout?",
+  "logoutConfirmationBody": "Are you sure you want to sign out of your account?",
+  "logoutFailed": "Logout failed: {error}",
+  "@logoutFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   
   "deleteAccountConfirm": "Delete Account?",
   "deletionWarning": "This cannot be undone!",
@@ -76,6 +98,10 @@
   "verifying": "Verifying...",
   "updating": "Updating...",
   "locationPermissionDenied": "Location permission denied",
+  "photoPickerCancelled": "No photo selected.",
+  "photoPermissionDenied": "Photo access was denied.",
+  "photoPickerFailed": "Could not select photo. Please try again.",
+  "couldNotOpenLink": "Could not open link.",
   "couldNotLoadTracklogs": "Could not load saved tracklogs",
   "trackImportedSuccessfully": "Track \"{name}\" imported successfully",
   "@trackImportedSuccessfully": {

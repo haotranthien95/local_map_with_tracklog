@@ -34,7 +34,7 @@ void main() {
     ));
 
     // Verify we start on the Map tab (default index 1)
-    expect(find.text('Local Map with Track Log'), findsOneWidget);
+    expect(find.text('Tinae - Explore Nature'), findsOneWidget);
 
     // Tap on Dashboard tab
     await tester.tap(find.text('Dashboard'));
@@ -55,6 +55,6 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify Map screen is displayed
-    expect(find.text('Local Map with Track Log'), findsOneWidget);
+    expect(find.text('Tinae - Explore Nature'), findsOneWidget);
   });
 }

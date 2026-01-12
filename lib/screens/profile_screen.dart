@@ -1,11 +1,17 @@
 // T076-T080: ProfileScreen for viewing and editing user profile
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import '../services/authentication_service.dart';
+import '../services/profile_photo_service.dart';
 import '../models/user.dart';
 import '../widgets/loading_overlay.dart';
 import 'account_settings_screen.dart';
 import 'package:local_map_with_tracklog/l10n/l10n_extension.dart';
+import '../models/profile_photo.dart';
 
 /// T076: Profile screen to display and edit user information
 class ProfileScreen extends StatefulWidget {
@@ -17,9 +23,11 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final _authService = AuthenticationService();
+  final ProfilePhotoService _profilePhotoService = const ProfilePhotoService();
   final _displayNameController = TextEditingController();
 
   User? _currentUser;
+  ProfilePhoto? _localProfilePhoto;
   bool _isLoading = false;
   bool _isEditingName = false;
   String? _errorMessage;
@@ -28,6 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     _loadUserProfile();
+    _loadLocalProfilePhoto();
   }
 
   @override
@@ -44,6 +53,60 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _displayNameController.text = _currentUser!.displayName ?? '';
       }
     });
+  }
+
+  Future<void> _loadLocalProfilePhoto() async {
+    final photo = await _profilePhotoService.getProfilePhoto();
+    if (!mounted) return;
+    setState(() {
+      _localProfilePhoto = photo;
+    });
+  }
+
+  void _showPhotoSnackBar(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  Future<void> _changeProfilePicture() async {
+    final picker = ImagePicker();
+
+    try {
+      final picked = await picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 85,
+      );
+
+      if (picked == null) {
+        _showPhotoSnackBar(context.l10n.photoPickerCancelled);
+        return;
+      }
+
+      setState(() {
+        _isLoading = true;
+      });
+
+      final saved = await _profilePhotoService.saveFromFilePath(picked.path);
+      if (!mounted) return;
+
+      setState(() {
+        _localProfilePhoto = saved;
+      });
+    } on PlatformException {
+      _showPhotoSnackBar(context.l10n.photoPermissionDenied);
+    } catch (_) {
+      _showPhotoSnackBar(context.l10n.photoPickerFailed);
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   // T077: Edit display name functionality
@@ -78,7 +141,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       // T079: Success feedback
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Display name updated successfully'),
+          content: Text(context.l10n.displayNameUpdatedSuccessfully),
           backgroundColor: Theme.of(context).primaryColor,
         ),
       );
@@ -115,21 +178,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Connection Error'),
-        content: const Text(
-          'Unable to update profile. Please check your internet connection and try again.',
-        ),
+        title: Text(context.l10n.connectionError),
+        content: Text(context.l10n.unableToUpdateProfile),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).pop();
               _saveDisplayName();
             },
-            child: const Text('Retry'),
+            child: Text(context.l10n.retry),
           ),
         ],
       ),
@@ -171,10 +232,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           CircleAvatar(
                             radius: 50,
                             backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-                            child: _currentUser!.photoUrl != null
+                            child: _localProfilePhoto != null
                                 ? ClipOval(
-                                    child: Image.network(
-                                      _currentUser!.photoUrl!,
+                                    child: Image.file(
+                                      File(_localProfilePhoto!.localPath),
                                       width: 100,
                                       height: 100,
                                       fit: BoxFit.cover,
@@ -187,11 +248,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       },
                                     ),
                                   )
-                                : Icon(
-                                    Icons.person,
-                                    size: 50,
-                                    color: Theme.of(context).primaryColor,
-                                  ),
+                                : _currentUser!.photoUrl != null
+                                    ? ClipOval(
+                                        child: Image.network(
+                                          _currentUser!.photoUrl!,
+                                          width: 100,
+                                          height: 100,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error, stackTrace) {
+                                            return Icon(
+                                              Icons.person,
+                                              size: 50,
+                                              color: Theme.of(context).primaryColor,
+                                            );
+                                          },
+                                        ),
+                                      )
+                                    : Icon(
+                                        Icons.person,
+                                        size: 50,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                          ),
+                          const SizedBox(height: 16),
+                          TextButton.icon(
+                            onPressed: _changeProfilePicture,
+                            icon: const Icon(Icons.photo_library_outlined),
+                            label: Text(context.l10n.changeProfilePicture),
                           ),
                           const SizedBox(height: 16),
                           Text(

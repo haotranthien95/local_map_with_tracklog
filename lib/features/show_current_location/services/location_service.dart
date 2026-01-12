@@ -18,17 +18,17 @@ class LocationService {
   /// Returns null if location is unavailable
   Future<LocationData?> getCurrentLocation() async {
     try {
-      final permission = await checkPermission();
-
-      if (permission == LocationPermission.denied) {
-        final newPermission = await requestPermission();
-        if (newPermission == LocationPermission.denied ||
-            newPermission == LocationPermission.deniedForever) {
-          return null;
-        }
-      }
+      var permission = await checkPermission();
 
       if (permission == LocationPermission.deniedForever) {
+        return null;
+      }
+
+      if (permission == LocationPermission.denied) {
+        permission = await requestPermission();
+      }
+
+      if (permission != LocationPermission.whileInUse) {
         return null;
       }
 

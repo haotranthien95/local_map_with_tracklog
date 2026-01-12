@@ -79,3 +79,26 @@ This document resolves planning unknowns and locks in implementation decisions f
 
 **Alternatives considered**:
 - Add analytics/crash reporting: rejected as out-of-scope for this compliance pass.
+
+---
+
+## Implementation Notes (Verification)
+
+### ATT prompt verification
+
+Searched the repository for App Tracking Transparency usage (for example `ATTrackingManager`, `AppTrackingTransparency`, `trackingAuthorizationStatus`). No matches were found.
+
+### Permissions-to-features mapping
+
+- **Location (When In Use)**
+	- Used only for user-initiated “center on current location” / showing current location on the map.
+	- No background location use.
+- **Photo Library**
+	- Used only when the user taps “Change profile picture”.
+	- Selected photo is stored on-device only.
+
+### iOS privacy manifest (required reason API)
+
+Declared required-reason API usage for:
+- `NSPrivacyAccessedAPICategoryUserDefaults` (reason `CA92.1`)
+- `NSPrivacyAccessedAPICategoryFileTimestamp` (reasons `C617.1`, `3B52.1`)

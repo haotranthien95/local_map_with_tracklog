@@ -42,11 +42,47 @@ This is a manual verification checklist intended for internal testing and App Re
 
 1. Sign in.
 2. Navigate to Delete Account.
-3. Complete required reauthentication and deletion.
-   - Expectation: user is signed out and account is deleted.
+
+### Email/password account
+
+1. Choose Delete Account.
+2. When prompted, enter the current password.
+3. Confirm deletion.
+   - Expectation: account deletion succeeds.
+   - Expectation: user is signed out after deletion.
+
+### Google account
+
+1. Sign in using Google.
+2. Choose Delete Account.
+3. If reauthentication is required, follow the in-app reauthentication step.
+   - Expectation: if deletion fails, local data is not removed.
+   - Expectation: on success, user is signed out.
+
+### Apple account (iOS)
+
+1. On iOS, sign in using Apple.
+2. Choose Delete Account.
+3. If reauthentication is required, follow the in-app reauthentication step.
+   - Expectation: on success, user is signed out.
+   - Expectation: app remains usable if user cancels.
 
 ## 5) Offline resilience
 
 1. Put device in airplane mode.
 2. Open map and tracklog screens.
    - Expectation: no crash; user-friendly offline/error state.
+
+---
+
+## Preflight Results (fill in when validating)
+
+- Date:
+- Tester:
+- Device / iOS version:
+- Result summary:
+   - 1) Permission behavior: PASS / FAIL
+   - 2) Privacy policy link: PASS / FAIL
+   - 3) Profile picture update: PASS / FAIL
+   - 4) Account deletion: PASS / FAIL
+   - 5) Offline resilience: PASS / FAIL

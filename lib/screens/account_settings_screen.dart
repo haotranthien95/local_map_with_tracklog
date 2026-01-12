@@ -6,6 +6,7 @@ import '../features/auth/validators/email_validator.dart';
 import '../features/auth/validators/password_validator.dart';
 import '../widgets/loading_overlay.dart';
 import '../widgets/auth_text_field.dart';
+import '../l10n/l10n_extension.dart';
 
 /// T081: Account settings screen for email and password changes
 class AccountSettingsScreen extends StatefulWidget {
@@ -433,9 +434,9 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
             const SizedBox(height: 48),
 
             // Danger Zone
-            const Text(
-              'Danger Zone',
-              style: TextStyle(
+            Text(
+              context.l10n.dangerZone,
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: Colors.red,
@@ -449,13 +450,13 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
               color: Colors.red.shade50,
               child: ListTile(
                 leading: const Icon(Icons.delete_forever, color: Colors.red),
-                title: const Text(
-                  'Delete Account',
-                  style: TextStyle(color: Colors.red),
+                title: Text(
+                  context.l10n.deleteAccount,
+                  style: const TextStyle(color: Colors.red),
                 ),
-                subtitle: const Text(
-                  'Permanently delete your account and all data',
-                  style: TextStyle(color: Colors.red),
+                subtitle: Text(
+                  context.l10n.deleteAccountSubtitle,
+                  style: const TextStyle(color: Colors.red),
                 ),
                 trailing: const Icon(Icons.chevron_right, color: Colors.red),
                 onTap: () {
@@ -466,7 +467,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
             ),
             const SizedBox(height: 24),
             Text(
-              'This action cannot be undone. All your data will be permanently deleted.',
+              context.l10n.deleteAccountIrreversible,
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.red.shade600,
@@ -477,153 +478,5 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
         ),
       ),
     );
-  }
-
-  // T090-T093: Delete account confirmation and execution
-  Future<void> _showDeleteAccountDialog() async {
-    final passwordController = TextEditingController();
-    final formKey = GlobalKey<FormState>();
-
-    // T090: Confirmation dialog with warning
-    final confirmDelete = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Account?'),
-        backgroundColor: Colors.red.shade50,
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.red.shade100,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.red.shade300),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.warning, color: Colors.red.shade700),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      'This cannot be undone!',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red.shade700,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Deleting your account will:',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text('• Permanently remove all your account data',
-                style: TextStyle(color: Colors.grey[700])),
-            Text('• Delete all your saved tracklogs', style: TextStyle(color: Colors.grey[700])),
-            Text('• Cancel any active sessions', style: TextStyle(color: Colors.grey[700])),
-            Text('• Remove your profile information', style: TextStyle(color: Colors.grey[700])),
-            const SizedBox(height: 16),
-            const Text(
-              'To confirm, enter your password:',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            Form(
-              key: formKey,
-              child: AuthTextField(
-                controller: passwordController,
-                label: 'Password',
-                obscureText: true,
-                prefixIcon: const Icon(Icons.lock),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Password is required';
-                  }
-                  return null;
-                },
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
-            onPressed: () {
-              if (formKey.currentState!.validate()) {
-                Navigator.of(context).pop(true);
-              }
-            },
-            child: const Text(
-              'Delete Account',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmDelete == true && mounted) {
-      // T091-T093: Execute account deletion
-      setState(() {
-        _isLoading = true;
-      });
-
-      try {
-        final password = passwordController.text;
-
-        // Delete account (Legacy method - kept for reference but not used)
-        await _authService.deleteAccount(password: password);
-
-        if (!mounted) return;
-
-        // T092: Success flow - clear navigation and redirect to login
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          '/login',
-          (route) => false,
-        );
-
-        // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Account deleted successfully'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      } on Exception catch (e) {
-        if (!mounted) return;
-
-        // T093: Error handling
-        final errorMessage = e.toString().replaceAll('Exception: ', '');
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(errorMessage),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 5),
-          ),
-        );
-      } finally {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-          });
-        }
-      }
-    }
-
-    passwordController.dispose();
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'dart:async';
 import '../l10n/l10n_extension.dart';
@@ -37,46 +38,78 @@ class _MapScreenState extends State<MapScreen> {
   bool _hasCheckedStorageWarning = false;
   DeviceLocation? _currentLocation;
   StreamSubscription<DeviceLocation?>? _locationSubscription;
-  bool firstTime = false;
+  bool _centerOnNextFix = false;
 
   @override
   void initState() {
     super.initState();
     _loadPersistedTracklogs();
     _checkStorageWarning();
-    _initializeLocation();
   }
 
-  Future<void> _initializeLocation() async {
-    // Request location permission
-    final hasPermission = await _locationService.requestPermission();
-    if (!hasPermission) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.l10n.locationPermissionDenied),
-            duration: const Duration(seconds: 2),
-          ),
-        );
-      }
-      return;
-    }
+  void _showLocationDeniedSnackBar({required bool showOpenSettings}) {
+    if (!mounted) return;
 
-    // Subscribe to location updates
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(context.l10n.locationPermissionDenied),
+        duration: const Duration(seconds: 3),
+        action: showOpenSettings
+            ? SnackBarAction(
+                label: context.l10n.openSettings,
+                onPressed: () {
+                  Geolocator.openAppSettings();
+                },
+              )
+            : null,
+      ),
+    );
+  }
+
+  Future<void> _startLocationListeningIfNeeded() async {
+    if (_locationSubscription != null) return;
+
     _locationSubscription = _locationService.locationStream.listen(
       (location) {
-        if (mounted && location != null) {
-          setState(() {
-            _currentLocation = location;
-          });
-          if (!firstTime) {
-            firstTime = true;
-            // Center map on initial location
-            _mapViewKey.currentState?.centerOnLocation(location.toLatLng());
-          }
+        if (!mounted || location == null) return;
+
+        setState(() {
+          _currentLocation = location;
+        });
+
+        if (_centerOnNextFix) {
+          _centerOnNextFix = false;
+          _mapViewKey.currentState?.centerOnLocation(location.toLatLng());
         }
       },
     );
+  }
+
+  Future<void> _onCenterOnLocationPressed() async {
+    _centerOnNextFix = true;
+
+    if (_currentLocation != null) {
+      _mapViewKey.currentState?.centerOnLocation(_currentLocation!.toLatLng());
+      _centerOnNextFix = false;
+      return;
+    }
+
+    final permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.deniedForever) {
+      _showLocationDeniedSnackBar(showOpenSettings: true);
+      return;
+    }
+
+    if (permission != LocationPermission.whileInUse) {
+      final granted = await _locationService.requestPermission();
+      if (!granted) {
+        final updated = await Geolocator.checkPermission();
+        _showLocationDeniedSnackBar(showOpenSettings: updated == LocationPermission.deniedForever);
+        return;
+      }
+    }
+
+    await _startLocationListeningIfNeeded();
   }
 
   /// Load tracklogs from persistent storage
@@ -227,15 +260,12 @@ class _MapScreenState extends State<MapScreen> {
             child: const Icon(Icons.north_sharp),
           ),
           const SizedBox(height: 16),
-          if (_currentLocation != null)
-            FloatingActionButton(
-              heroTag: 'center_location',
-              onPressed: () {
-                _mapViewKey.currentState?.centerOnLocation(_currentLocation!.toLatLng());
-              },
-              child: const Icon(Icons.my_location),
-            ),
-          if (_currentLocation != null) const SizedBox(height: 16),
+          FloatingActionButton(
+            heroTag: 'center_location',
+            onPressed: _onCenterOnLocationPressed,
+            child: const Icon(Icons.my_location),
+          ),
+          const SizedBox(height: 16),
           // Import track button
           FloatingActionButton(
             heroTag: 'import',
@@ -435,10 +465,21 @@ class _MapScreenState extends State<MapScreen> {
         track = _tracks.firstWhere((t) => t.id == selectedId);
       } else {
         // Load track if not in memory
-        track = await _storageService.loadTrack(selectedId);
-        setState(() {
-          _tracks.add(track!);
-        });
+        try {
+          track = await _storageService.loadTrack(selectedId);
+          setState(() {
+            _tracks.add(track!);
+          });
+        } catch (e) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(context.l10n.couldNotLoadTracklogs),
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+          );
+          return;
+        }
       }
 
       _mapViewKey.currentState?.fitBounds(track.bounds);

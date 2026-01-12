@@ -13,6 +13,9 @@
   "logout": "退出登录",
   "account": "账户",
   "deleteAccount": "注销账号",
+  "dangerZone": "危险区域",
+  "deleteAccountSubtitle": "永久删除您的账号",
+  "deleteAccountIrreversible": "此操作无法撤销。",
   "language": "语言",
   "theme": "主题",
   "light": "浅色",
@@ -55,10 +58,29 @@
   "noUserSignedIn": "未登录用户",
   "editDisplayName": "编辑显示名称",
   "displayName": "显示名称",
+  "displayNameUpdatedSuccessfully": "显示名称更新成功",
+  "connectionError": "连接错误",
+  "unableToUpdateProfile": "无法更新资料。请检查网络连接后重试。",
   "accountInformation": "账号信息",
   "memberSince": "成员时间",
   "emailVerified": "邮箱已验证",
   "accountSettings": "账号设置",
+  "viewAndEditYourProfile": "查看并编辑您的个人资料",
+  "changeProfilePicture": "更换头像",
+  "privacyPolicy": "隐私政策",
+  "about": "关于",
+  "legal": "法律信息",
+  "openSettings": "打开设置",
+  "logoutConfirmationTitle": "退出登录？",
+  "logoutConfirmationBody": "确定要退出当前账户吗？",
+  "logoutFailed": "退出登录失败: {error}",
+  "@logoutFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   
   "deleteAccountConfirm": "注销账号？",
   "deletionWarning": "此操作将无法撤销！",
@@ -73,6 +95,10 @@
   "verifying": "验证中...",
   "updating": "更新中...",
   "locationPermissionDenied": "位置权限被拒绝",
+  "photoPickerCancelled": "未选择照片。",
+  "photoPermissionDenied": "照片权限被拒绝。",
+  "photoPickerFailed": "无法选择照片，请重试。",
+  "couldNotOpenLink": "无法打开链接。",
   "couldNotLoadTracklogs": "无法加载保存的轨迹日志",
   "trackImportedSuccessfully": "轨迹 \"{name}\" 导入成功",
   "@trackImportedSuccessfully": {

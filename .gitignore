@@ -42,6 +42,10 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# iOS CocoaPods (generated)
+ios/Pods/
+ios/.symlinks/
+
 # Environment and secrets
 .env
 .env.*
