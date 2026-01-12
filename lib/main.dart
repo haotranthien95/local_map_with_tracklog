@@ -74,7 +74,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Local Map with Track Log',
+      title: 'Tinae - Explore Nature',
       theme: AppThemeData.lightTheme,
       darkTheme: AppThemeData.darkTheme,
       themeMode: _themeService.themeMode,

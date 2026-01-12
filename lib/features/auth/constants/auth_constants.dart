@@ -91,6 +91,6 @@ class AuthConstants {
       'You must be at least $minimumAge years old to create an account';
 
   // Privacy and terms
-  static const String privacyPolicyUrl = 'https://yourapp.com/privacy';
-  static const String termsOfServiceUrl = 'https://yourapp.com/terms';
+  static const String privacyPolicyUrl = 'https://reetro.vn/private.html';
+  static const String termsOfServiceUrl = 'https://reetro.vn/terms.html';
 }

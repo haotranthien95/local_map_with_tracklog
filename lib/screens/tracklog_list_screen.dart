@@ -166,7 +166,19 @@ class _TracklogListScreenState extends State<TracklogListScreen> {
       }
     });
 
-    widget.onUpdateMetadata(updated);
+    try {
+      widget.onUpdateMetadata(updated);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.failedToUpdateTracklog(e.toString())),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+      return;
+    }
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -209,7 +221,19 @@ class _TracklogListScreenState extends State<TracklogListScreen> {
       }
     });
 
-    widget.onUpdateMetadata(updated);
+    try {
+      widget.onUpdateMetadata(updated);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.failedToUpdateTracklog(e.toString())),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+      return;
+    }
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -251,7 +275,19 @@ class _TracklogListScreenState extends State<TracklogListScreen> {
       }
     });
 
-    widget.onUpdateMetadata(updated);
+    try {
+      widget.onUpdateMetadata(updated);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.failedToUpdateTracklog(e.toString())),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+      return;
+    }
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -275,7 +311,19 @@ class _TracklogListScreenState extends State<TracklogListScreen> {
       _tracklogs.removeWhere((t) => t.id == tracklog.id);
     });
 
-    widget.onDeleteTracklog(tracklog.id);
+    try {
+      widget.onDeleteTracklog(tracklog.id);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.failedToDeleteTracklog(e.toString())),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+      return;
+    }
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

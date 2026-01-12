@@ -43,13 +43,17 @@ class LocationServiceImpl implements LocationService {
       // Check current permission status
       LocationPermission permission = await Geolocator.checkPermission();
 
+      if (permission == LocationPermission.deniedForever) {
+        return false;
+      }
+
       // Request permission if denied
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
       }
 
-      // Return true if we have any level of permission
-      return permission == LocationPermission.always || permission == LocationPermission.whileInUse;
+      // Only accept while-in-use permission for this app
+      return permission == LocationPermission.whileInUse;
     } catch (e) {
       return false;
     }
@@ -66,7 +70,7 @@ class LocationServiceImpl implements LocationService {
 
       // Check permission status
       LocationPermission permission = await Geolocator.checkPermission();
-      return permission == LocationPermission.always || permission == LocationPermission.whileInUse;
+      return permission == LocationPermission.whileInUse;
     } catch (e) {
       return false;
     }

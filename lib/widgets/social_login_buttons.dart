@@ -1,5 +1,7 @@
 // T044: SocialLoginButtons widget for Google and Apple sign-in buttons
 
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import '../theme/app_theme_config.dart';
 
@@ -22,6 +24,8 @@ class SocialLoginButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final effectiveShowApple = showApple && Platform.isIOS;
+
     return Column(
       children: [
         if (showGoogle)
@@ -32,8 +36,8 @@ class SocialLoginButtons extends StatelessWidget {
             backgroundColor: Colors.white,
             textColor: Colors.black87,
           ),
-        if (showGoogle && showApple) const SizedBox(height: 12),
-        if (showApple)
+        if (showGoogle && effectiveShowApple) const SizedBox(height: 12),
+        if (effectiveShowApple)
           _SocialButton(
             text: 'Continue with Apple',
             onPressed: isLoading ? null : onAppleSignIn,
