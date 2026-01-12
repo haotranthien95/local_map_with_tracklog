@@ -466,7 +466,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildInfoRow(String label, String value, IconData icon, {Color? valueColor}) {
     return Row(
       children: [
-        Icon(icon, size: 20, color: Theme.of(context).primaryColor.withOpacity(0.7)),
+        Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary.withOpacity(0.7)),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
