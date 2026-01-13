@@ -197,7 +197,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         duration: const Duration(seconds: 2),
       ),
     );
@@ -397,7 +397,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         child: Text(
                           context.l10n.signIn,
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                color: Theme.of(context).primaryColor,
+                                color: Theme.of(context).colorScheme.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                         ),

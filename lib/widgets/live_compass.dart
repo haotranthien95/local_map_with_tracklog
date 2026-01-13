@@ -62,7 +62,7 @@ class LiveCompass extends StatelessWidget {
                     height: size * 0.4,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: isActive ? Theme.of(context).primaryColor : Colors.grey,
+                      color: isActive ? Theme.of(context).colorScheme.primary : Colors.grey,
                       border: Border.all(
                         color: Colors.white,
                         width: 2,

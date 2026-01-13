@@ -142,7 +142,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(context.l10n.displayNameUpdatedSuccessfully),
-          backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: Theme.of(context).colorScheme.primary,
         ),
       );
 
@@ -231,7 +231,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         children: [
                           CircleAvatar(
                             radius: 50,
-                            backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+                            backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                             child: _localProfilePhoto != null
                                 ? ClipOval(
                                     child: Image.file(
@@ -243,7 +243,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         return Icon(
                                           Icons.person,
                                           size: 50,
-                                          color: Theme.of(context).primaryColor,
+                                          color: Theme.of(context).colorScheme.primary,
                                         );
                                       },
                                     ),
@@ -259,7 +259,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             return Icon(
                                               Icons.person,
                                               size: 50,
-                                              color: Theme.of(context).primaryColor,
+                                              color: Theme.of(context).colorScheme.primary,
                                             );
                                           },
                                         ),
@@ -267,7 +267,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     : Icon(
                                         Icons.person,
                                         size: 50,
-                                        color: Theme.of(context).primaryColor,
+                                        color: Theme.of(context).colorScheme.primary,
                                       ),
                           ),
                           const SizedBox(height: 16),
@@ -426,7 +426,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               _currentUser!.emailVerified ? 'Yes' : 'No',
                               _currentUser!.emailVerified ? Icons.verified : Icons.warning,
                               valueColor: _currentUser!.emailVerified
-                                  ? Theme.of(context).primaryColor
+                                  ? Theme.of(context).colorScheme.primary
                                   : Theme.of(context).colorScheme.error,
                             ),
                             const Divider(height: 24),

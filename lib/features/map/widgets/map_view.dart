@@ -145,7 +145,7 @@ class MapViewState extends State<MapView> {
                     height: 40,
                     child: LiveCompass(
                       size: 40,
-                      backgroundColor: Theme.of(context).primaryColor.withOpacity(0.2),
+                      backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
                       ringColor: Colors.transparent,
                       northColor: Theme.of(context).colorScheme.error,
                       textColor: Colors.white70,
