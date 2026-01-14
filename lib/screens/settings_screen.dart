@@ -204,7 +204,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Text(
         title.toUpperCase(),
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).colorScheme.primary,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.2,
             ),

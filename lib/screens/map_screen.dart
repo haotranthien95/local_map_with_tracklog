@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:local_map_with_tracklog/services/authentication_service.dart';
 import 'dart:async';
 import '../l10n/l10n_extension.dart';
 import '../models/map_style.dart';
@@ -31,6 +32,7 @@ class _MapScreenState extends State<MapScreen> {
   final LocationService _locationService = LocationServiceImpl();
   final TracklogStorageService _storageService = TracklogStorageServiceImpl();
   final GlobalKey<MapViewState> _mapViewKey = GlobalKey<MapViewState>();
+  final _authService = AuthenticationService();
 
   MapStyle _currentMapStyle = MapStyle.standard;
   final List<model.Track> _tracks = [];
@@ -45,6 +47,14 @@ class _MapScreenState extends State<MapScreen> {
     super.initState();
     _loadPersistedTracklogs();
     _checkStorageWarning();
+    checkAuthAndGetLocation();
+  }
+
+  void checkAuthAndGetLocation() async {
+    final user = _authService.getCurrentUser();
+    if (user != null) {
+      _onCenterOnLocationPressed();
+    }
   }
 
   void _showLocationDeniedSnackBar({required bool showOpenSettings}) {
@@ -83,6 +93,14 @@ class _MapScreenState extends State<MapScreen> {
         }
       },
     );
+  }
+
+  void _onZoomIn() {
+    _mapViewKey.currentState?.zoomIn();
+  }
+
+  void _onZoomOut() {
+    _mapViewKey.currentState?.zoomOut();
   }
 
   Future<void> _onCenterOnLocationPressed() async {
@@ -205,7 +223,7 @@ class _MapScreenState extends State<MapScreen> {
         actions: [
           // Tracklog list button
           IconButton(
-            icon: const Icon(Icons.list),
+            icon: const Icon(Icons.route),
             onPressed: _openTracklogList,
           ),
           // Storage info button
@@ -251,6 +269,18 @@ class _MapScreenState extends State<MapScreen> {
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          // FloatingActionButton(
+          //   heroTag: 'zoom_in',
+          //   onPressed: _onZoomIn,
+          //   child: const Icon(Icons.add),
+          // ),
+          // const SizedBox(height: 16),
+          // FloatingActionButton(
+          //   heroTag: 'zoom_out',
+          //   onPressed: _onZoomOut,
+          //   child: const Icon(Icons.remove),
+          // ),
+          // const SizedBox(height: 16),
           // Center on location button
           FloatingActionButton(
             heroTag: 'to_north',

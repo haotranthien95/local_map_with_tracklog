@@ -47,4 +47,13 @@ class MapStyle {
       orElse: () => standard,
     );
   }
+
+  static String getMapIdFromUrlTemplate({String? urlTemplate}) {
+    for (var style in all) {
+      if (style.tileUrlTemplate == urlTemplate) {
+        return style.id;
+      }
+    }
+    return standard.id;
+  }
 }

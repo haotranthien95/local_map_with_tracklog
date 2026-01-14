@@ -256,7 +256,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Password reset email sent to $email'),
-            backgroundColor: Theme.of(context).primaryColor,
+            backgroundColor: Theme.of(context).colorScheme.primary,
           ),
         );
       } catch (e) {
@@ -310,7 +310,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: const Text('Verification email sent'),
-                    backgroundColor: Theme.of(context).primaryColor,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                   ),
                 );
                 Navigator.of(context).pop();
@@ -370,7 +370,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Icon(
                     Icons.map,
                     size: 80,
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -520,7 +520,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Text(
                           context.l10n.register,
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                color: Theme.of(context).primaryColor,
+                                color: Theme.of(context).colorScheme.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                         ),
