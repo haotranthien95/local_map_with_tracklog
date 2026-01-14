@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 0.0.1+22
+version: 0.0.1+23
 
 environment:
   sdk: ^3.5.4
@@ -98,9 +98,51 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/maps/terrain/
+    - assets/maps/standard/
     - assets/icons/
     - assets/images/
-
+    - assets/maps/standard/0/0/0.png
+    - assets/maps/standard/7/104/60.png
+    - assets/maps/standard/7/103/57.png
+    - assets/maps/standard/6/51/28.png
+    - assets/maps/standard/6/51/29.png
+    - assets/maps/standard/6/52/28.png
+    - assets/maps/standard/6/52/29.png
+    - assets/maps/standard/6/52/30.png
+    - assets/maps/standard/1/1/0.png
+    - assets/maps/standard/8/207/115.png
+    - assets/maps/standard/8/207/116.png
+    - assets/maps/standard/8/208/121.png
+    - assets/maps/standard/4/12/7.png
+    - assets/maps/standard/4/13/7.png
+    - assets/maps/standard/3/6/3.png
+    - assets/maps/standard/2/3/1.png
+    - assets/maps/standard/5/26/14.png
+    - assets/maps/standard/5/26/15.png
+    - assets/maps/standard/5/25/14.png
+    - assets/maps/standard/5/25/15.png
+    - assets/maps/terrain/0/0/0.png
+    - assets/maps/terrain/6/51/28.png
+    - assets/maps/terrain/6/51/29.png
+    - assets/maps/terrain/6/52/28.png
+    - assets/maps/terrain/6/52/29.png
+    - assets/maps/terrain/1/1/0.png
+    - assets/maps/terrain/4/12/7.png
+    - assets/maps/terrain/4/13/7.png
+    - assets/maps/terrain/3/6/3.png
+    - assets/maps/terrain/2/3/1.png
+    - assets/maps/terrain/5/26/14.png
+    - assets/maps/terrain/5/26/15.png
+    - assets/maps/terrain/5/25/14.png
+    - assets/maps/terrain/5/25/15.png
+    - assets/maps/terrain/6/52/30.png
+    - assets/maps/terrain/7/103/57.png
+    - assets/maps/terrain/7/103/58.png
+    - assets/maps/terrain/7/104/58.png
+    - assets/maps/terrain/7/104/57.png
+    - assets/maps/terrain/7/104/60.png
+    - assets/maps/terrain/7/103/60.png
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

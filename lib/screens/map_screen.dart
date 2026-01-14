@@ -95,6 +95,14 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
+  void _onZoomIn() {
+    _mapViewKey.currentState?.zoomIn();
+  }
+
+  void _onZoomOut() {
+    _mapViewKey.currentState?.zoomOut();
+  }
+
   Future<void> _onCenterOnLocationPressed() async {
     _centerOnNextFix = true;
 
@@ -261,6 +269,18 @@ class _MapScreenState extends State<MapScreen> {
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          // FloatingActionButton(
+          //   heroTag: 'zoom_in',
+          //   onPressed: _onZoomIn,
+          //   child: const Icon(Icons.add),
+          // ),
+          // const SizedBox(height: 16),
+          // FloatingActionButton(
+          //   heroTag: 'zoom_out',
+          //   onPressed: _onZoomOut,
+          //   child: const Icon(Icons.remove),
+          // ),
+          // const SizedBox(height: 16),
           // Center on location button
           FloatingActionButton(
             heroTag: 'to_north',
