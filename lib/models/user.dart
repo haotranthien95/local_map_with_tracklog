@@ -70,11 +70,18 @@ class User {
 
   /// Create User from Firebase User
   factory User.fromFirebaseUser(firebase_auth.User firebaseUser) {
-    // Determine auth provider from user's provider data
+    // Determine primary auth provider. For linked accounts (multiple providers),
+    // prefer social providers (Google > Apple) over email/password, since social
+    // providers supply the richest profile data (display name, photo).
     AuthProvider provider = AuthProvider.emailPassword;
     if (firebaseUser.providerData.isNotEmpty) {
-      final providerId = firebaseUser.providerData.first.providerId;
-      provider = AuthProvider.fromProviderId(providerId);
+      const priority = ['google.com', 'apple.com', 'password'];
+      final providerIds = firebaseUser.providerData.map((p) => p.providerId).toList();
+      final best = priority.firstWhere(
+        (p) => providerIds.contains(p),
+        orElse: () => providerIds.first,
+      );
+      provider = AuthProvider.fromProviderId(best);
     }
 
     return User(

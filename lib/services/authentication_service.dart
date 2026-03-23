@@ -61,26 +61,17 @@ class AuthenticationService {
     try {
       // Validate email
       if (!EmailValidator.isValidEmail(email)) {
-        return AuthResult.failure(
-          AuthConstants.getErrorMessage('invalid-email'),
-          errorCode: 'invalid-email',
-        );
+        return AuthResult.failure(AuthConstants.getErrorMessage('invalid-email'), errorCode: 'invalid-email');
       }
 
       // Validate password
       if (!PasswordValidator.isValidPassword(password)) {
         final error = PasswordValidator.getValidationError(password);
-        return AuthResult.failure(
-          error ?? 'Invalid password',
-          errorCode: 'weak-password',
-        );
+        return AuthResult.failure(error ?? 'Invalid password', errorCode: 'weak-password');
       }
 
       // Create user with Firebase
-      final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
 
       if (userCredential.user == null) {
         return AuthResult.failure('Failed to create account');
@@ -105,10 +96,7 @@ class AuthenticationService {
       final user = User.fromFirebaseUser(userCredential.user!);
       return AuthResult.success(user);
     } on firebase_auth.FirebaseAuthException catch (e) {
-      return AuthResult.failure(
-        AuthConstants.getErrorMessage(e.code),
-        errorCode: e.code,
-      );
+      return AuthResult.failure(AuthConstants.getErrorMessage(e.code), errorCode: e.code);
     } catch (e) {
       return AuthResult.failure('An unexpected error occurred: ${e.toString()}');
     }
@@ -145,8 +133,8 @@ class AuthenticationService {
   Future<AuthResult> registerWithGoogle() async {
     try {
       // Trigger Google Sign-In flow
-      final GoogleSignIn googleSignIn = GoogleSignIn();
-      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      final GoogleSignIn googleSignIn = GoogleSignIn.instance;
+      final GoogleSignInAccount? googleUser = await googleSignIn.authenticate();
 
       if (googleUser == null) {
         // User cancelled sign-in
@@ -156,12 +144,11 @@ class AuthenticationService {
         );
       }
 
-      // Obtain auth details
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      // Obtain auth details (synchronous in google_sign_in v7)
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
       // Create Firebase credential
       final credential = firebase_auth.GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
@@ -187,16 +174,10 @@ class AuthenticationService {
       return AuthResult.success(user);
     } on firebase_auth.FirebaseAuthException catch (e) {
       // T050: Handle account linking if account exists with different credential
-      if (e.code == 'account-exists-with-different-credential' && e.email != null) {
-        return await _linkAccountWithCredential(
-          firebase_auth.GoogleAuthProvider.credential(),
-          e.email!,
-        );
+      if (e.code == 'account-exists-with-different-credential' && e.email != null && e.credential != null) {
+        return await _linkAccountWithCredential(e.credential!, e.email!);
       }
-      return AuthResult.failure(
-        AuthConstants.getErrorMessage(e.code),
-        errorCode: e.code,
-      );
+      return AuthResult.failure(AuthConstants.getErrorMessage(e.code), errorCode: e.code);
     } catch (e) {
       return AuthResult.failure('An unexpected error occurred: ${e.toString()}');
     }
@@ -207,10 +188,7 @@ class AuthenticationService {
     try {
       // Trigger Apple Sign In flow
       final appleCredential = await SignInWithApple.getAppleIDCredential(
-        scopes: [
-          AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName,
-        ],
+        scopes: [AppleIDAuthorizationScopes.email, AppleIDAuthorizationScopes.fullName],
       );
 
       // Create Firebase credential
@@ -229,8 +207,7 @@ class AuthenticationService {
 
       // Update display name if provided by Apple (first time only)
       if (appleCredential.givenName != null || appleCredential.familyName != null) {
-        final displayName =
-            '${appleCredential.givenName ?? ''} ${appleCredential.familyName ?? ''}'.trim();
+        final displayName = '${appleCredential.givenName ?? ''} ${appleCredential.familyName ?? ''}'.trim();
         if (displayName.isNotEmpty &&
             userCredential.user!.displayName == null &&
             (userCredential.user?.displayName ?? "").isEmpty) {
@@ -253,16 +230,10 @@ class AuthenticationService {
       return AuthResult.success(user);
     } on firebase_auth.FirebaseAuthException catch (e) {
       // T051: Handle account linking if account exists with different credential
-      if (e.code == 'account-exists-with-different-credential' && e.email != null) {
-        return await _linkAccountWithCredential(
-          firebase_auth.OAuthProvider('apple.com').credential(),
-          e.email!,
-        );
+      if (e.code == 'account-exists-with-different-credential' && e.email != null && e.credential != null) {
+        return await _linkAccountWithCredential(e.credential!, e.email!);
       }
-      return AuthResult.failure(
-        AuthConstants.getErrorMessage(e.code),
-        errorCode: e.code,
-      );
+      return AuthResult.failure(AuthConstants.getErrorMessage(e.code), errorCode: e.code);
     } on SignInWithAppleAuthorizationException catch (e) {
       if (e.code == AuthorizationErrorCode.canceled) {
         return AuthResult.failure(
@@ -283,25 +254,16 @@ class AuthenticationService {
     try {
       // Validate email
       if (!EmailValidator.isValidEmail(email)) {
-        return AuthResult.failure(
-          AuthConstants.getErrorMessage('invalid-email'),
-          errorCode: 'invalid-email',
-        );
+        return AuthResult.failure(AuthConstants.getErrorMessage('invalid-email'), errorCode: 'invalid-email');
       }
 
       // Validate password (basic check)
       if (password.isEmpty) {
-        return AuthResult.failure(
-          'Password is required',
-          errorCode: 'invalid-password',
-        );
+        return AuthResult.failure('Password is required', errorCode: 'invalid-password');
       }
 
       // Sign in with Firebase
-      final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      final userCredential = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
 
       if (userCredential.user == null) {
         return AuthResult.failure('Failed to sign in');
@@ -321,15 +283,9 @@ class AuthenticationService {
     } on firebase_auth.FirebaseAuthException catch (e) {
       // Map user-not-found and wrong-password to same message for security
       if (e.code == 'user-not-found' || e.code == 'wrong-password') {
-        return AuthResult.failure(
-          'Invalid email or password',
-          errorCode: 'invalid-credentials',
-        );
+        return AuthResult.failure('Invalid email or password', errorCode: 'invalid-credentials');
       }
-      return AuthResult.failure(
-        AuthConstants.getErrorMessage(e.code),
-        errorCode: e.code,
-      );
+      return AuthResult.failure(AuthConstants.getErrorMessage(e.code), errorCode: e.code);
     } catch (e) {
       return AuthResult.failure('An unexpected error occurred: ${e.toString()}');
     }
@@ -348,8 +304,8 @@ class AuthenticationService {
   Future<AuthResult> signInWithGoogle() async {
     try {
       // Trigger Google Sign-In flow
-      final GoogleSignIn googleSignIn = GoogleSignIn();
-      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      final GoogleSignIn googleSignIn = GoogleSignIn.instance;
+      final GoogleSignInAccount? googleUser = await googleSignIn.authenticate();
 
       if (googleUser == null) {
         // User cancelled sign-in
@@ -359,12 +315,11 @@ class AuthenticationService {
         );
       }
 
-      // Obtain auth details
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      // Obtain auth details (synchronous in google_sign_in v7)
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
       // Create Firebase credential
       final credential = firebase_auth.GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
@@ -388,16 +343,10 @@ class AuthenticationService {
       return AuthResult.success(user);
     } on firebase_auth.FirebaseAuthException catch (e) {
       // T069: Handle account linking
-      if (e.code == 'account-exists-with-different-credential' && e.email != null) {
-        return await _linkAccountWithCredential(
-          firebase_auth.GoogleAuthProvider.credential(),
-          e.email!,
-        );
+      if (e.code == 'account-exists-with-different-credential' && e.email != null && e.credential != null) {
+        return await _linkAccountWithCredential(e.credential!, e.email!);
       }
-      return AuthResult.failure(
-        AuthConstants.getErrorMessage(e.code),
-        errorCode: e.code,
-      );
+      return AuthResult.failure(AuthConstants.getErrorMessage(e.code), errorCode: e.code);
     } catch (e) {
       return AuthResult.failure('An unexpected error occurred: ${e.toString()}');
     }
@@ -408,10 +357,7 @@ class AuthenticationService {
     try {
       // Trigger Apple Sign In flow
       final appleCredential = await SignInWithApple.getAppleIDCredential(
-        scopes: [
-          AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName,
-        ],
+        scopes: [AppleIDAuthorizationScopes.email, AppleIDAuthorizationScopes.fullName],
       );
 
       // Create Firebase credential
@@ -441,16 +387,10 @@ class AuthenticationService {
       return AuthResult.success(user);
     } on firebase_auth.FirebaseAuthException catch (e) {
       // T069: Handle account linking
-      if (e.code == 'account-exists-with-different-credential' && e.email != null) {
-        return await _linkAccountWithCredential(
-          firebase_auth.OAuthProvider('apple.com').credential(),
-          e.email!,
-        );
+      if (e.code == 'account-exists-with-different-credential' && e.email != null && e.credential != null) {
+        return await _linkAccountWithCredential(e.credential!, e.email!);
       }
-      return AuthResult.failure(
-        AuthConstants.getErrorMessage(e.code),
-        errorCode: e.code,
-      );
+      return AuthResult.failure(AuthConstants.getErrorMessage(e.code), errorCode: e.code);
     } on SignInWithAppleAuthorizationException catch (e) {
       if (e.code == AuthorizationErrorCode.canceled) {
         return AuthResult.failure(
@@ -499,11 +439,8 @@ class AuthenticationService {
     // Re-authenticate user before sensitive operation
     await _reauthenticateWithPassword(currentPassword);
 
-    // Update email in Firebase
-    await user.updateEmail(newEmail);
-
-    // Send verification to new email
-    await user.sendEmailVerification();
+    // Send verification email to new address; Firebase updates email after verification
+    await user.verifyBeforeUpdateEmail(newEmail);
 
     // Reload to get updated profile
     await user.reload();
@@ -549,10 +486,7 @@ class AuthenticationService {
   Future<AuthResult> deleteAccount({String? password}) async {
     final user = _firebaseAuth.currentUser;
     if (user == null) {
-      return AuthResult.failure(
-        'No user signed in',
-        errorCode: 'no-user',
-      );
+      return AuthResult.failure('No user signed in', errorCode: 'no-user');
     }
 
     final userId = user.uid;
@@ -566,10 +500,7 @@ class AuthenticationService {
         // Social-only user: use provider reauthentication with fallback
         final providers = getLinkedProviders();
         if (providers.isEmpty) {
-          return AuthResult.failure(
-            AuthConstants.getErrorMessage('no-auth-method'),
-            errorCode: 'no-auth-method',
-          );
+          return AuthResult.failure(AuthConstants.getErrorMessage('no-auth-method'), errorCode: 'no-auth-method');
         }
 
         // Try each provider in priority order (google → apple)
@@ -590,10 +521,7 @@ class AuthenticationService {
 
         if (reauthResult == null || !reauthResult.success) {
           return reauthResult ??
-              AuthResult.failure(
-                AuthConstants.getErrorMessage('no-auth-method'),
-                errorCode: 'no-auth-method',
-              );
+              AuthResult.failure(AuthConstants.getErrorMessage('no-auth-method'), errorCode: 'no-auth-method');
         }
       } else {
         // T029: Hybrid user (email/password + possibly social)
@@ -604,11 +532,9 @@ class AuthenticationService {
           } on firebase_auth.FirebaseAuthException catch (e) {
             // If password auth fails and user has social providers, try fallback
             final socialProviders = getLinkedProviders();
-            final hasSocialFallback =
-                socialProviders.any((p) => p == 'google.com' || p == 'apple.com');
+            final hasSocialFallback = socialProviders.any((p) => p == 'google.com' || p == 'apple.com');
 
-            if (hasSocialFallback &&
-                (e.code == 'wrong-password' || e.code == 'invalid-credential')) {
+            if (hasSocialFallback && (e.code == 'wrong-password' || e.code == 'invalid-credential')) {
               // Try social provider fallback
               AuthResult? reauthResult;
               for (final providerId in socialProviders) {
@@ -635,10 +561,7 @@ class AuthenticationService {
             }
           }
         } else {
-          return AuthResult.failure(
-            'Password is required',
-            errorCode: 'missing-password',
-          );
+          return AuthResult.failure('Password is required', errorCode: 'missing-password');
         }
       }
 
@@ -658,23 +581,14 @@ class AuthenticationService {
         // T014: Auto-retry on requires-recent-login (shouldn't happen after reauth, but defensive)
         if (e.code == 'requires-recent-login') {
           // Reauthentication was stale - this shouldn't happen, but return error for UI to handle
-          return AuthResult.failure(
-            AuthConstants.getErrorMessage(e.code),
-            errorCode: e.code,
-          );
+          return AuthResult.failure(AuthConstants.getErrorMessage(e.code), errorCode: e.code);
         }
         rethrow; // Other Firebase errors - let outer catch handle
       }
     } on firebase_auth.FirebaseAuthException catch (e) {
-      return AuthResult.failure(
-        AuthConstants.getErrorMessage(e.code),
-        errorCode: e.code,
-      );
+      return AuthResult.failure(AuthConstants.getErrorMessage(e.code), errorCode: e.code);
     } catch (e) {
-      return AuthResult.failure(
-        'Account deletion failed: ${e.toString()}',
-        errorCode: 'unknown-error',
-      );
+      return AuthResult.failure('Account deletion failed: ${e.toString()}', errorCode: 'unknown-error');
     }
   }
 
@@ -757,32 +671,101 @@ class AuthenticationService {
 
   // ===== Helper Methods =====
 
-  /// T052: Link accounts when account exists with different credential
-  /// This handles automatic bidirectional account linking
-  Future<AuthResult> _linkAccountWithCredential(
-    firebase_auth.AuthCredential pendingCredential,
-    String email,
-  ) async {
-    try {
-      // Step 1: Get sign-in methods for the email
-      final signInMethods = await _firebaseAuth.fetchSignInMethodsForEmail(email);
+  /// T052: Sign into the existing account and link the new provider credential.
+  /// When a user attempts sign-up/sign-in with a provider but already has an account
+  /// under the same email with a different provider, this method:
+  ///   1. Signs into the existing account via its current provider (Google or Apple)
+  ///   2. Links the new provider credential so both sign-in methods work going forward
+  ///   3. Returns the existing account — name, photo and all data are preserved
+  ///
+  /// If the existing account uses email/password, automatic sign-in is not possible
+  /// and a clear error is returned directing the user to sign in with their password.
+  /// T052: Sign into the existing account and link the new provider credential.
+  ///
+  /// firebase_auth v6+ removed fetchSignInMethodsForEmail (email enumeration protection).
+  /// Instead we infer the existing provider from the pending credential's provider ID:
+  ///   - pending = Google  → try Apple first, fall back to email/password message
+  ///   - pending = Apple   → try Google first, fall back to email/password message
+  /// If the complementary social provider succeeds and the signed-in email matches,
+  /// the new credential is linked and the existing account (with all data) is returned.
+  Future<AuthResult> _linkAccountWithCredential(firebase_auth.AuthCredential pendingCredential, String email) async {
+    final pendingProviderId = pendingCredential.providerId;
 
-      if (signInMethods.isEmpty) {
-        return AuthResult.failure('No account found with this email');
+    // Try the complementary social provider (the one that isn't the pending one)
+    firebase_auth.UserCredential? existingUserCredential;
+
+    try {
+      if (pendingProviderId != 'google.com') {
+        // Pending is Apple (or other) — try Google
+        final GoogleSignIn googleSignIn = GoogleSignIn.instance;
+        final GoogleSignInAccount? googleUser = await googleSignIn.authenticate();
+        if (googleUser != null) {
+          final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+          final credential = firebase_auth.GoogleAuthProvider.credential(
+            idToken: googleAuth.idToken,
+          );
+          final result = await _firebaseAuth.signInWithCredential(credential);
+          // Only accept if it's the same account
+          if (result.user?.email == email) {
+            existingUserCredential = result;
+          }
+        }
+      } else {
+        // Pending is Google — try Apple
+        final appleCredential = await SignInWithApple.getAppleIDCredential(
+          scopes: [AppleIDAuthorizationScopes.email, AppleIDAuthorizationScopes.fullName],
+        );
+        final oAuthProvider = firebase_auth.OAuthProvider('apple.com');
+        final credential = oAuthProvider.credential(
+          idToken: appleCredential.identityToken,
+          accessToken: appleCredential.authorizationCode,
+        );
+        final result = await _firebaseAuth.signInWithCredential(credential);
+        if (result.user?.email == email) {
+          existingUserCredential = result;
+        }
+      }
+    } on SignInWithAppleAuthorizationException catch (e) {
+      if (e.code == AuthorizationErrorCode.canceled) {
+        return AuthResult.failure(
+          AuthConstants.getErrorMessage('popup-closed-by-user'),
+          errorCode: 'popup-closed-by-user',
+        );
+      }
+      // Apple failed for another reason — fall through to email/password message
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      // Social sign-in failed — fall through to email/password message
+      if (e.code != 'user-not-found' && e.code != 'account-exists-with-different-credential') {
+        return AuthResult.failure(AuthConstants.getErrorMessage(e.code), errorCode: e.code);
+      }
+    } catch (_) {
+      // Other error — fall through to email/password message
+    }
+
+    if (existingUserCredential?.user != null) {
+      // Signed into the existing account — link the new provider credential
+      try {
+        await existingUserCredential!.user!.linkWithCredential(pendingCredential);
+      } on firebase_auth.FirebaseAuthException catch (e) {
+        // Already linked is fine — proceed
+        if (e.code != 'credential-already-in-use' && e.code != 'provider-already-linked') {
+          return AuthResult.failure(AuthConstants.getErrorMessage(e.code), errorCode: e.code);
+        }
       }
 
-      // Step 2: User must sign in with existing credential first
-      // For automatic linking, we'll return an error asking user to sign in first
-      // Then they can link in profile settings
-      // Note: Fully automatic linking would require password prompt here
-      return AuthResult.failure(
-        'An account already exists with this email. Please sign in with ${signInMethods.first} first, '
-        'then you can link your accounts in Profile Settings.',
-        errorCode: 'account-exists-with-different-credential',
-      );
-    } catch (e) {
-      return AuthResult.failure('Account linking failed: ${e.toString()}');
+      await existingUserCredential!.user!.reload();
+      final updatedUser = _firebaseAuth.currentUser;
+      if (updatedUser == null) {
+        return AuthResult.failure('Failed to retrieve user data');
+      }
+      return AuthResult.success(User.fromFirebaseUser(updatedUser));
     }
+
+    // Existing account likely uses email/password — direct the user to sign in
+    return AuthResult.failure(
+      'An account with this email already exists. Please sign in with your email and password.',
+      errorCode: 'account-exists-with-different-credential',
+    );
   }
 
   // ===== Feature 004: Provider Detection & Reauthentication =====
@@ -792,9 +775,7 @@ class AuthenticationService {
     final user = _firebaseAuth.currentUser;
     if (user == null) return false;
 
-    return user.providerData.any(
-      (provider) => provider.providerId == 'google.com',
-    );
+    return user.providerData.any((provider) => provider.providerId == 'google.com');
   }
 
   /// Check if Apple provider is linked to current user
@@ -802,9 +783,7 @@ class AuthenticationService {
     final user = _firebaseAuth.currentUser;
     if (user == null) return false;
 
-    return user.providerData.any(
-      (provider) => provider.providerId == 'apple.com',
-    );
+    return user.providerData.any((provider) => provider.providerId == 'apple.com');
   }
 
   /// Check if user is social-only (no email/password)
@@ -812,9 +791,7 @@ class AuthenticationService {
     final user = _firebaseAuth.currentUser;
     if (user == null) return false;
 
-    final hasPassword = user.providerData.any(
-      (provider) => provider.providerId == 'password',
-    );
+    final hasPassword = user.providerData.any((provider) => provider.providerId == 'password');
 
     return !hasPassword && user.providerData.isNotEmpty;
   }
@@ -843,37 +820,27 @@ class AuthenticationService {
     try {
       final user = _firebaseAuth.currentUser;
       if (user == null) {
-        return AuthResult.failure(
-          'No user signed in',
-          errorCode: 'no-current-user',
-        );
+        return AuthResult.failure('No user signed in', errorCode: 'no-current-user');
       }
 
       // Check if Google is linked
       final hasGoogle = user.providerData.any((provider) => provider.providerId == 'google.com');
 
       if (!hasGoogle) {
-        return AuthResult.failure(
-          'Google not linked to this account',
-          errorCode: 'provider-not-linked',
-        );
+        return AuthResult.failure('Google not linked to this account', errorCode: 'provider-not-linked');
       }
 
-      // Trigger Google Sign-In
-      final GoogleSignIn googleSignIn = GoogleSignIn();
-      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      // Trigger Google Sign-In (google_sign_in v7 API)
+      final GoogleSignIn googleSignIn = GoogleSignIn.instance;
+      final GoogleSignInAccount? googleUser = await googleSignIn.authenticate();
 
       if (googleUser == null) {
-        return AuthResult.failure(
-          'Sign-in cancelled by user',
-          errorCode: 'popup-closed-by-user',
-        );
+        return AuthResult.failure('Sign-in cancelled by user', errorCode: 'popup-closed-by-user');
       }
 
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
       final credential = firebase_auth.GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
@@ -881,15 +848,9 @@ class AuthenticationService {
 
       return AuthResult.success(User.fromFirebaseUser(user));
     } on firebase_auth.FirebaseAuthException catch (e) {
-      return AuthResult.failure(
-        AuthConstants.getErrorMessage(e.code),
-        errorCode: e.code,
-      );
+      return AuthResult.failure(AuthConstants.getErrorMessage(e.code), errorCode: e.code);
     } catch (e) {
-      return AuthResult.failure(
-        'Reauthentication failed: ${e.toString()}',
-        errorCode: 'unknown-error',
-      );
+      return AuthResult.failure('Reauthentication failed: ${e.toString()}', errorCode: 'unknown-error');
     }
   }
 
@@ -898,28 +859,19 @@ class AuthenticationService {
     try {
       final user = _firebaseAuth.currentUser;
       if (user == null) {
-        return AuthResult.failure(
-          'No user signed in',
-          errorCode: 'no-current-user',
-        );
+        return AuthResult.failure('No user signed in', errorCode: 'no-current-user');
       }
 
       // Check if Apple is linked
       final hasApple = user.providerData.any((provider) => provider.providerId == 'apple.com');
 
       if (!hasApple) {
-        return AuthResult.failure(
-          'Apple not linked to this account',
-          errorCode: 'provider-not-linked',
-        );
+        return AuthResult.failure('Apple not linked to this account', errorCode: 'provider-not-linked');
       }
 
       // Trigger Apple Sign-In
       final appleCredential = await SignInWithApple.getAppleIDCredential(
-        scopes: [
-          AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName,
-        ],
+        scopes: [AppleIDAuthorizationScopes.email, AppleIDAuthorizationScopes.fullName],
       );
 
       final oAuthProvider = firebase_auth.OAuthProvider('apple.com');
@@ -932,15 +884,9 @@ class AuthenticationService {
 
       return AuthResult.success(User.fromFirebaseUser(user));
     } on firebase_auth.FirebaseAuthException catch (e) {
-      return AuthResult.failure(
-        AuthConstants.getErrorMessage(e.code),
-        errorCode: e.code,
-      );
+      return AuthResult.failure(AuthConstants.getErrorMessage(e.code), errorCode: e.code);
     } catch (e) {
-      return AuthResult.failure(
-        'Reauthentication failed: ${e.toString()}',
-        errorCode: 'unknown-error',
-      );
+      return AuthResult.failure('Reauthentication failed: ${e.toString()}', errorCode: 'unknown-error');
     }
   }
 
@@ -951,10 +897,7 @@ class AuthenticationService {
       throw Exception('No user signed in');
     }
 
-    final credential = firebase_auth.EmailAuthProvider.credential(
-      email: user.email!,
-      password: password,
-    );
+    final credential = firebase_auth.EmailAuthProvider.credential(email: user.email!, password: password);
 
     await user.reauthenticateWithCredential(credential);
   }
