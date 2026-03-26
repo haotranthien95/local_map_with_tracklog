@@ -135,7 +135,7 @@ class AuthenticationService {
       // Trigger Google Sign-In flow
       final GoogleSignIn googleSignIn = GoogleSignIn.instance;
       final GoogleSignInAccount? googleUser = await googleSignIn.authenticate();
-
+      print('Google Sign-Up result: ${googleUser != null ? 'Success' : 'Cancelled'}');
       if (googleUser == null) {
         // User cancelled sign-in
         return AuthResult.failure(
@@ -148,9 +148,7 @@ class AuthenticationService {
       final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
       // Create Firebase credential
-      final credential = firebase_auth.GoogleAuthProvider.credential(
-        idToken: googleAuth.idToken,
-      );
+      final credential = firebase_auth.GoogleAuthProvider.credential(idToken: googleAuth.idToken);
 
       // Sign in with Firebase
       final userCredential = await _firebaseAuth.signInWithCredential(credential);
@@ -306,7 +304,7 @@ class AuthenticationService {
       // Trigger Google Sign-In flow
       final GoogleSignIn googleSignIn = GoogleSignIn.instance;
       final GoogleSignInAccount? googleUser = await googleSignIn.authenticate();
-
+      print(" Google Sign-In result: ${googleUser != null ? 'Success' : 'Cancelled'}");
       if (googleUser == null) {
         // User cancelled sign-in
         return AuthResult.failure(
@@ -319,9 +317,7 @@ class AuthenticationService {
       final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
       // Create Firebase credential
-      final credential = firebase_auth.GoogleAuthProvider.credential(
-        idToken: googleAuth.idToken,
-      );
+      final credential = firebase_auth.GoogleAuthProvider.credential(idToken: googleAuth.idToken);
 
       // Sign in with Firebase
       final userCredential = await _firebaseAuth.signInWithCredential(credential);
@@ -348,6 +344,7 @@ class AuthenticationService {
       }
       return AuthResult.failure(AuthConstants.getErrorMessage(e.code), errorCode: e.code);
     } catch (e) {
+      print('Google Sign-In error: ${e.toString()}');
       return AuthResult.failure('An unexpected error occurred: ${e.toString()}');
     }
   }
@@ -701,9 +698,7 @@ class AuthenticationService {
         final GoogleSignInAccount? googleUser = await googleSignIn.authenticate();
         if (googleUser != null) {
           final GoogleSignInAuthentication googleAuth = googleUser.authentication;
-          final credential = firebase_auth.GoogleAuthProvider.credential(
-            idToken: googleAuth.idToken,
-          );
+          final credential = firebase_auth.GoogleAuthProvider.credential(idToken: googleAuth.idToken);
           final result = await _firebaseAuth.signInWithCredential(credential);
           // Only accept if it's the same account
           if (result.user?.email == email) {
@@ -822,6 +817,7 @@ class AuthenticationService {
       if (user == null) {
         return AuthResult.failure('No user signed in', errorCode: 'no-current-user');
       }
+      print('Google Sign-Up result: ${user != null ? 'Success' : 'Cancelled'}');
 
       // Check if Google is linked
       final hasGoogle = user.providerData.any((provider) => provider.providerId == 'google.com');
@@ -840,9 +836,7 @@ class AuthenticationService {
 
       final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
-      final credential = firebase_auth.GoogleAuthProvider.credential(
-        idToken: googleAuth.idToken,
-      );
+      final credential = firebase_auth.GoogleAuthProvider.credential(idToken: googleAuth.idToken);
 
       await user.reauthenticateWithCredential(credential);
 
